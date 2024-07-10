@@ -1,0 +1,8 @@
+{
+  "name": "Avocado/Rowdy's Extensions",
+  "description": "This is the only repo that contains Audiobooks and more",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/plugins.json"
+  ]
+}
