@@ -1,0 +1,395 @@
+[
+    {
+        "iconUrl": "https://manga.all-wish.me/favicon.ico",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 20185,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "RowdyRushya"
+        ],
+        "tvTypes": [
+            "All"
+        ],
+        "version": 10,
+        "internalName": "AllWish",
+        "description": "Anime from all-wish.me",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/AllWish.cs3",
+        "name": "AllWish"
+    },
+    {
+        "iconUrl": "https://cdn.discordapp.com/attachments/1109266606292488297/1200425504432472176/Anichi.png?ex=65eb0c5f&is=65d8975f&hm=974898b22b08774a5caa835b40546a6419280446b68255147dd1febb3abe9119&",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 56798,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "Hexated"
+        ],
+        "tvTypes": [
+            "AnimeMovie",
+            "Anime",
+            "OVA"
+        ],
+        "version": 11,
+        "internalName": "Anichi",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/Anichi.cs3",
+        "name": "Anichi"
+    },
+    {
+        "iconUrl": "https://www.google.com/s2/favicons?domain=anitaku.to&sz=%size%",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 20744,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "Cloudburst, Aryan Invader, KillerDogeEmpire, RowdyRushya"
+        ],
+        "tvTypes": [
+            "AnimeMovie",
+            "Anime",
+            "OVA"
+        ],
+        "version": 10,
+        "internalName": "Anitaku",
+        "description": "Anime from Anitaku (formerly GoGo Anime)",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/Anitaku.cs3",
+        "name": "Anitaku"
+    },
+    {
+        "iconUrl": "https://aniwave.best/aniwave/images/favicon.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 56029,
+        "status": 0,
+        "language": "en",
+        "authors": [
+            "RowdyRushya, Horis, Stormunblessed, KillerDogeEmpire, Enimax, Chokerman"
+        ],
+        "tvTypes": [
+            "Anime",
+            "OVA"
+        ],
+        "version": 63,
+        "internalName": "Aniwave",
+        "description": "Watch Aniwave/9anime, I have had reports saying homepage doesn't work the first time but retrying should fix it",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/Aniwave.cs3",
+        "name": "Aniwave"
+    },
+    {
+        "iconUrl": "https://www.google.com/s2/favicons?domain=appaudiobooks.com/&sz=%size%",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 10413,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "KillerDogeEmpire"
+        ],
+        "tvTypes": [
+            "Others"
+        ],
+        "version": 4,
+        "internalName": "AppAudiobook",
+        "description": "Audiobooks with some more books not in other sources -  download in addition to GoldenAudiobooks if book not found there",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/AppAudiobook.cs3",
+        "name": "AppAudiobook"
+    },
+    {
+        "iconUrl": "https://cinezone.to/assets/sites/cinezone/favicon.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 24138,
+        "status": 0,
+        "language": "en",
+        "authors": [
+            "RowdyRushya"
+        ],
+        "tvTypes": [
+            "movies",
+            "TvSeries"
+        ],
+        "version": 9,
+        "internalName": "CineZone",
+        "description": "The best extension for watching movies and tv shows from CineZone",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/CineZone.cs3",
+        "name": "CineZone"
+    },
+    {
+        "iconUrl": "https://www.google.com/s2/favicons?domain=uncutmaza.cc&sz=%size%",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 331072,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "KillerDogeEmpire, Phisher98, Hexated, Sora"
+        ],
+        "tvTypes": [
+            "AsianDrama",
+            "TvSeries",
+            "Anime",
+            "Movie"
+        ],
+        "version": 11,
+        "internalName": "CodeStream",
+        "description": "#1 best extention based on MultiAPI",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/CodeStream.cs3",
+        "name": "CodeStream"
+    },
+    {
+        "iconUrl": "https://www.google.com/s2/favicons?domain=goldenaudiobook.com/&sz=%size%",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 12146,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "KillerDogeEmpire"
+        ],
+        "tvTypes": [
+            "Others"
+        ],
+        "version": 12,
+        "internalName": "GoldenAudiobook",
+        "description": "Audiobooks - Use Picture in Picture or VLC as external player",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/GoldenAudiobook.cs3",
+        "name": "GoldenAudiobook"
+    },
+    {
+        "iconUrl": "https://www.google.com/s2/favicons?domain=hianime.to&sz=%size%",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 63713,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "Stormunblessed, KillerDogeEmpire,RowdyRushya,Phisher98"
+        ],
+        "tvTypes": [
+            "Anime",
+            "OVA"
+        ],
+        "version": 13,
+        "internalName": "HiAnime",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/HiAnime.cs3",
+        "name": "HiAnime"
+    },
+    {
+        "iconUrl": "https://kinokiste.live/templates/kkiste/images/favicon.ico",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 15398,
+        "status": 1,
+        "language": "de",
+        "authors": [
+            "RowdyRushya"
+        ],
+        "tvTypes": [
+            "Movies",
+            "TvSeries",
+            "Anime"
+        ],
+        "version": 1,
+        "internalName": "KinoKiste",
+        "description": "KinoKiste - Filme online stream anschauen Kostenlos auf Deutsch",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/KinoKiste.cs3",
+        "name": "KinoKiste"
+    },
+    {
+        "iconUrl": "https://raw.githubusercontent.com/Stormunblessed/IPTV-CR-NIC/main/logos/kronch.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 74097,
+        "status": 0,
+        "language": "en",
+        "authors": [
+            "Stormunblessed, KillerDogeEmpire"
+        ],
+        "tvTypes": [
+            "Anime",
+            "OVA"
+        ],
+        "version": 33,
+        "internalName": "KronchEN",
+        "description": "With this extension you will be able to watch english hardsubbed/dubbed anime available in the US catalog of Crunchyroll.",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/KronchEN.cs3",
+        "name": "KronchEN"
+    },
+    {
+        "iconUrl": "https://raw.githubusercontent.com/Stormunblessed/IPTV-CR-NIC/main/logos/kronch.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 66441,
+        "status": 0,
+        "language": "en",
+        "authors": [
+            "Stormunblessed, KillerDogeEmpire"
+        ],
+        "tvTypes": [
+            "Anime",
+            "OVA"
+        ],
+        "version": 12,
+        "internalName": "KronchGEOEN",
+        "description": "This extensions is region locked, it will help you watch english hardsubbed/dubbed anime from Crunchyroll in your region",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/KronchGEOEN.cs3",
+        "name": "KronchGEOEN"
+    },
+    {
+        "iconUrl": "https://librivox.org/wp-content/themes/librivox/images/librivox-logo.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 10724,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "KillerDogeEmpire"
+        ],
+        "tvTypes": [
+            "Others"
+        ],
+        "version": 6,
+        "internalName": "LibriVoxAudiobook",
+        "description": "Audiobooks in public domain",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/LibriVoxAudiobook.cs3",
+        "name": "LibriVoxAudiobook"
+    },
+    {
+        "iconUrl": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/master/logos/mangadex.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 44021,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "RowdyRushya"
+        ],
+        "tvTypes": [
+            "Other"
+        ],
+        "version": 11,
+        "internalName": "MangaDex",
+        "description": "Read Manga from MangaDex",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/MangaDex.cs3",
+        "name": "MangaDex"
+    },
+    {
+        "iconUrl": "https://i1.wp.com/moviesnipipay.me/wp-content/uploads/2022/04/cropped-mviesnipipayfavicon-192x192.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 14273,
+        "status": 1,
+        "language": "fil",
+        "authors": [
+            "RowdyRushya"
+        ],
+        "tvTypes": [
+            "Movies"
+        ],
+        "version": 1,
+        "internalName": "MoviesNiPipay",
+        "description": "MoviesNiPipay",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/MoviesNiPipay.cs3",
+        "name": "MoviesNiPipay"
+    },
+    {
+        "iconUrl": "https://myflixerz.me/images/favicon.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 16334,
+        "status": 0,
+        "language": "en",
+        "authors": [
+            "RowdyRushya"
+        ],
+        "tvTypes": [
+            "Movies",
+            "TV Series"
+        ],
+        "version": 6,
+        "internalName": "MyFlixer",
+        "description": "Watch movies and series from Flixerz",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/MyFlixer.cs3",
+        "name": "MyFlixer"
+    },
+    {
+        "iconUrl": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/master/logos/onepace.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 8161,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "KillerDogeEmpire, Phisher98"
+        ],
+        "tvTypes": [
+            "Anime"
+        ],
+        "version": 4,
+        "internalName": "OnePace",
+        "description": "One Pace",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/OnePace.cs3",
+        "name": "OnePace"
+    },
+    {
+        "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Korduene_Logo.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 3224,
+        "status": 0,
+        "language": "en",
+        "authors": [
+            "Template"
+        ],
+        "tvTypes": [
+            
+        ],
+        "version": -1,
+        "internalName": "ProviderTemplate",
+        "description": "Lorem ipsum",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/ProviderTemplate.cs3",
+        "name": "ProviderTemplate"
+    },
+    {
+        "iconUrl": "https://tokybook.com/wp-content/uploads/TOKY-BOOK-website.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 11118,
+        "status": 0,
+        "language": "en",
+        "authors": [
+            "KillerDogeEmpire"
+        ],
+        "tvTypes": [
+            "Others"
+        ],
+        "version": 7,
+        "internalName": "TokyBook",
+        "description": "Audiobook Source with good library, use Search, the homepage sucks",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/TokyBook.cs3",
+        "name": "TokyBook"
+    },
+    {
+        "iconUrl": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/master/logos/ultima.png",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Rowdy-Avocado/Rowdycado-Extensions",
+        "fileSize": 188530,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "RowdyRushya"
+        ],
+        "tvTypes": [
+            "All"
+        ],
+        "version": 42,
+        "internalName": "Ultima",
+        "description": "The ultimate All-in-One home screen to access all of your extensions at one place (You need to select/deselect sections in Ultima's settings to load other extensions on home screen)",
+        "url": "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/Ultima.cs3",
+        "name": "Ultima"
+    }
+]
