@@ -14,7 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lagradost.cloudstream3.CommonActivity.showToast
-import com.lagradost.cloudstream3.utils.AppUtils.setDefaultFocus
+import com.lagradost.cloudstream3.utils.AppContextUtils.setDefaultFocus
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
