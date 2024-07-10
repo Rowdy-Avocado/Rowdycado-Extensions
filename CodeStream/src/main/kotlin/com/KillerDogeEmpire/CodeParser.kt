@@ -30,38 +30,38 @@ data class TmdbDate(
 data class AniwaveResponse(
         val result: String
 ) {
-    fun asJsoup(): Document {
-        return Jsoup.parse(result)
-    }
+        fun asJsoup(): Document {
+                return Jsoup.parse(result)
+        }
 }
 
 data class AniwaveServer(
         val result: Result
 ) {
-    data class Result(
-            val url: String
-    ) {
-        fun decrypt(): String {
-            return AniwaveUtils.decodeVrf(url)
+        data class Result(
+                val url: String
+        ) {
+                fun decrypt(): String {
+                        return AniwaveUtils.vrfDecrypt(url)
+                }
         }
-    }
 }
 
 data class MoflixResponse(
         @JsonProperty("title") val title: Episode? = null,
         @JsonProperty("episode") val episode: Episode? = null,
 ) {
-    data class Episode(
-            @JsonProperty("id") val id: Int? = null,
-            @JsonProperty("videos") val videos: ArrayList<Videos>? = arrayListOf(),
-    ) {
-        data class Videos(
-                @JsonProperty("name") val name: String? = null,
-                @JsonProperty("category") val category: String? = null,
-                @JsonProperty("src") val src: String? = null,
-                @JsonProperty("quality") val quality: String? = null,
-        )
-    }
+        data class Episode(
+                @JsonProperty("id") val id: Int? = null,
+                @JsonProperty("videos") val videos: ArrayList<Videos>? = arrayListOf(),
+        ) {
+                data class Videos(
+                        @JsonProperty("name") val name: String? = null,
+                        @JsonProperty("category") val category: String? = null,
+                        @JsonProperty("src") val src: String? = null,
+                        @JsonProperty("quality") val quality: String? = null,
+                )
+        }
 }
 
 data class AniMedia(
@@ -284,12 +284,12 @@ data class CrunchyrollToken(
         @JsonProperty("token_type") val tokenType: String? = null,
         @JsonProperty("cms") val cms: Cms? = null,
 ) {
-    data class Cms(
-            @JsonProperty("bucket") var bucket: String? = null,
-            @JsonProperty("policy") var policy: String? = null,
-            @JsonProperty("signature") var signature: String? = null,
-            @JsonProperty("key_pair_id") var key_pair_id: String? = null,
-    )
+        data class Cms(
+                @JsonProperty("bucket") var bucket: String? = null,
+                @JsonProperty("policy") var policy: String? = null,
+                @JsonProperty("signature") var signature: String? = null,
+                @JsonProperty("key_pair_id") var key_pair_id: String? = null,
+        )
 }
 
 data class CrunchyrollVersions(
@@ -315,10 +315,10 @@ data class CrunchyrollSourcesResponses(
         @JsonProperty("streams") val streams: Streams? = Streams(),
         @JsonProperty("subtitles") val subtitles: HashMap<String, HashMap<String, String>>? = hashMapOf(),
 ) {
-    data class Streams(
-            @JsonProperty("adaptive_hls") val adaptive_hls: HashMap<String, HashMap<String, String>>? = hashMapOf(),
-            @JsonProperty("vo_adaptive_hls") val vo_adaptive_hls: HashMap<String, HashMap<String, String>>? = hashMapOf(),
-    )
+        data class Streams(
+                @JsonProperty("adaptive_hls") val adaptive_hls: HashMap<String, HashMap<String, String>>? = hashMapOf(),
+                @JsonProperty("vo_adaptive_hls") val vo_adaptive_hls: HashMap<String, HashMap<String, String>>? = hashMapOf(),
+        )
 }
 
 data class MALSyncSites(
@@ -493,47 +493,50 @@ data class SmashySources(
 data class AoneroomResponse(
         @JsonProperty("data") val data: Data? = null,
 ) {
-    data class Data(
-            @JsonProperty("items") val items: ArrayList<Items>? = arrayListOf(),
-            @JsonProperty("list") val list: ArrayList<List>? = arrayListOf(),
-    ) {
-        data class Items(
-                @JsonProperty("subjectId") val subjectId: String? = null,
-                @JsonProperty("title") val title: String? = null,
-                @JsonProperty("releaseDate") val releaseDate: String? = null,
-        )
-
-        data class List(
-                @JsonProperty("resourceLink") val resourceLink: String? = null,
-                @JsonProperty("extCaptions") val extCaptions: ArrayList<ExtCaptions>? = arrayListOf(),
-                @JsonProperty("se") val se: Int? = null,
-                @JsonProperty("ep") val ep: Int? = null,
-                @JsonProperty("resolution") val resolution: Int? = null,
+        data class Data(
+                @JsonProperty("items") val items: ArrayList<Items>? = arrayListOf(),
+                @JsonProperty("list") val list: ArrayList<List>? = arrayListOf(),
         ) {
-            data class ExtCaptions(
-                    @JsonProperty("lanName") val lanName: String? = null,
-                    @JsonProperty("url") val url: String? = null,
-            )
+                data class Items(
+                        @JsonProperty("subjectId") val subjectId: String? = null,
+                        @JsonProperty("title") val title: String? = null,
+                        @JsonProperty("releaseDate") val releaseDate: String? = null,
+                )
+
+                data class List(
+                        @JsonProperty("resourceLink") val resourceLink: String? = null,
+                        @JsonProperty("extCaptions") val extCaptions: ArrayList<ExtCaptions>? = arrayListOf(),
+                        @JsonProperty("se") val se: Int? = null,
+                        @JsonProperty("ep") val ep: Int? = null,
+                        @JsonProperty("resolution") val resolution: Int? = null,
+                ) {
+                        data class ExtCaptions(
+                                @JsonProperty("lanName") val lanName: String? = null,
+                                @JsonProperty("url") val url: String? = null,
+                        )
+                }
         }
-    }
 }
 
 data class CinemaTvResponse(
         @JsonProperty("streams") val streams: HashMap<String, String>? = null,
         @JsonProperty("subtitles") val subtitles: ArrayList<Subtitles>? = arrayListOf(),
 ) {
-    data class Subtitles(
-            @JsonProperty("language") val language: String? = null,
-            @JsonProperty("file") val file: Any? = null,
-    )
+        data class Subtitles(
+                @JsonProperty("language") val language: String? = null,
+                @JsonProperty("file") val file: Any? = null,
+        )
 }
 
 data class NepuSearch(
         @JsonProperty("data") val data: ArrayList<Data>? = arrayListOf(),
 ) {
-    data class Data(
-            @JsonProperty("url") val url: String? = null,
-            @JsonProperty("name") val name: String? = null,
-            @JsonProperty("type") val type: String? = null,
-    )
+        data class Data(
+                @JsonProperty("url") val url: String? = null,
+                @JsonProperty("name") val name: String? = null,
+                @JsonProperty("type") val type: String? = null,
+        )
 }
+data class Bollyflixparse(
+        val url: String,
+)
