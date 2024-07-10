@@ -2,7 +2,7 @@ package com.KillerDogeEmpire
 
 //import com.KillerDogeEmpire.CodeStream.invokeWatchasian
 import android.util.Log
-import com.KillerDogeEmpire.CodeStream.invoke2embed
+import com.KillerDogeEmpire.CodeExtractor.invoke2embed
 import com.KillerDogeEmpire.CodeExtractor.invokeAllMovieland
 import com.KillerDogeEmpire.CodeExtractor.invokeAnimes
 import com.KillerDogeEmpire.CodeExtractor.invokeMoviesdrive
