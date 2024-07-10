@@ -63,6 +63,10 @@ jobs:
           SUPERSTREAM_FOURTH_API: ${{ secrets.SUPERSTREAM_FOURTH_API }}
           SIMKL_API: ${{ secrets.SIMKL_API }}
           MAL_API: ${{ secrets.MAL_API }}
+          MOVIE_API: ${{ secrets.MOVIE_API }}
+          MultiMovies_API: ${{ secrets.MultiMovies_API }}
+          MovieDrive_API: ${{ secrets.MovieDrive_API }}
+          AsianDrama_API: ${{ secrets.AsianDrama_API }}
         run: |
           cd $GITHUB_WORKSPACE/src
           echo TMDB_API=$TMDB_API >> local.properties
@@ -84,6 +88,10 @@ jobs:
           echo SUPERSTREAM_FOURTH_API=$SUPERSTREAM_FOURTH_API >> local.properties
           echo SIMKL_API=$SIMKL_API >> local.properties
           echo MAL_API=$MAL_API >> local.properties
+          echo MOVIE_API=$MOVIE_API >> local.properties
+          echo MultiMovies_API=$MultiMovies_API >> local.properties
+          echo MovieDrive_API=$MovieDrive_API >> local.properties
+          echo AsianDrama_API=$AsianDrama_API >> local.properties
 
       - name: Build Plugins
         run: |
