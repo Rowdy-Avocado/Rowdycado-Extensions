@@ -28,11 +28,9 @@ class AniwaveMediaProvider : MediaProvider() {
             callback: (ExtractorLink) -> Unit
     ) {
         val episode = data.episode ?: if (data.isAnime && data.type.equals("Movie")) 1 else return
-        val searchPage =
-                app.get(
-                                "$url/filter?keyword=${data.title}&year[]=${data.year?:""}&sort=most_relevance"
-                        )
-                        .document
+        val filterUrl =
+                "$url/filter?keyword=${data.title}&year[]=${data.year?:""}&sort=most_relevance"
+        val searchPage = app.get(filterUrl).document
         val id =
                 searchPage.selectFirst("div.poster")?.attr("data-tip")?.split("?/")?.get(0)
                         ?: return

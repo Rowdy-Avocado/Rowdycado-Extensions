@@ -130,7 +130,7 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
         val id = url.removeSuffix("/").substringAfterLast("/")
         val data =
                 anilistAPICall(
-                                "query (\$id: Int = $id) {  Media (id: \$id, type: ANIME) { id title { romaji english } seasonYear genres description averageScore bannerImage coverImage { extraLarge large medium } bannerImage episodes nextAiringEpisode { episode } recommendations { edges { node { id mediaRecommendation { id title { romaji english } coverImage { extraLarge large medium } } } } } } }"
+                                "query (\$id: Int = $id) {  Media (id: \$id, type: ANIME) { id title { romaji english } startDate { year } genres description averageScore bannerImage coverImage { extraLarge large medium } bannerImage episodes nextAiringEpisode { episode } recommendations { edges { node { id mediaRecommendation { id title { romaji english } coverImage { extraLarge large medium } } } } } } }"
                         )
                         .data
                         .media
@@ -140,7 +140,7 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
                     val linkData =
                             LinkData(
                                             title = data.getTitle(),
-                                            year = data.seasonYear,
+                                            year = data.startDate.year,
                                             season = 1,
                                             episode = i,
                                             isAnime = true
@@ -151,7 +151,7 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
         return newAnimeLoadResponse(data.getTitle(), url, TvType.Anime) {
             addAniListId(id.toInt())
             addEpisodes(DubStatus.Subbed, episodes)
-            this.year = data.seasonYear
+            this.year = data.startDate.year
             this.plot = data.description
             this.backgroundPosterUrl = data.bannerImage
             this.posterUrl = data.getCoverImage()
@@ -199,7 +199,7 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
 
         data class anilistMedia(
                 @JsonProperty("id") val id: Int,
-                @JsonProperty("seasonYear") val seasonYear: Int,
+                @JsonProperty("startDate") val startDate: StartDate,
                 @JsonProperty("episodes") val episodes: Int?,
                 @JsonProperty("title") val title: Title,
                 @JsonProperty("genres") val genres: List<String>,
@@ -209,6 +209,8 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
                 @JsonProperty("nextAiringEpisode") val nextAiringEpisode: SeasonNextAiringEpisode?,
                 @JsonProperty("recommendations") val recommendations: RecommendationConnection?,
         ) {
+            data class StartDate(@JsonProperty("year") val year: Int)
+
             fun totalEpisodes(): Int {
                 return nextAiringEpisode?.episode?.minus(1)
                         ?: episodes ?: throw Exception("Unable to calculate total episodes")
