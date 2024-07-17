@@ -127,7 +127,11 @@ class CineZone(val plugin: CineZonePlugin) : MainAPI() {
                     this.posterUrl = res.document.select("div.poster > div > img").attr("src")
                     this.backgroundPosterUrl = bgPoster ?: posterUrl
                     this.rating =
-                            details.selectFirst("span.imdb")?.text()?.trim()?.toFloat()?.toInt()
+                            details.selectFirst("span.imdb")
+                                    ?.text()
+                                    ?.trim()
+                                    ?.toFloatOrNull()
+                                    ?.toInt()
                     this.recommendations = searchResponseBuilder(res.document)
                 }
             }
