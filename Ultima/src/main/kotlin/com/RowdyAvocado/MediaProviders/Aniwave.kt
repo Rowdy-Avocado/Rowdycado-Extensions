@@ -28,11 +28,9 @@ class AniwaveMediaProvider : MediaProvider() {
             callback: (ExtractorLink) -> Unit
     ) {
         val episode = data.episode ?: if (data.isAnime && data.type.equals("Movie")) 1 else return
-        val searchPage =
-                app.get(
-                                "$url/filter?keyword=${data.title}&year[]=${data.year?:""}&sort=most_relevance"
-                        )
-                        .document
+        val filterUrl =
+                "$url/filter?keyword=${data.title}&year[]=${data.year?:""}&sort=most_relevance"
+        val searchPage = app.get(filterUrl).document
         val id =
                 searchPage.selectFirst("div.poster")?.attr("data-tip")?.split("?/")?.get(0)
                         ?: return
@@ -91,11 +89,11 @@ class AniwaveMediaProvider : MediaProvider() {
 
         var vrf = cipher.doFinal(input.toByteArray())
         vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        vrf = Base64.encode(vrf, Base64.DEFAULT or Base64.NO_WRAP)
-        vrf = vrfShift(vrf)
-        // vrf = rot13(vrf)
-        vrf = vrf.reversed().toByteArray()
-        vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
+        // vrf = Base64.encode(vrf, Base64.DEFAULT or Base64.NO_WRAP)
+        // vrf = vrfShift(vrf)
+        // // vrf = rot13(vrf)
+        // vrf = vrf.reversed().toByteArray()
+        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
         val stringVrf = vrf.toString(Charsets.UTF_8)
         val final = java.net.URLEncoder.encode(stringVrf, "utf-8")
         return final

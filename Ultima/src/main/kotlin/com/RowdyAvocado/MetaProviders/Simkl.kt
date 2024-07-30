@@ -25,7 +25,7 @@ import com.lagradost.cloudstream3.newTvSeriesLoadResponse
 import com.lagradost.cloudstream3.syncproviders.AccountManager
 import com.lagradost.cloudstream3.syncproviders.SyncIdName
 import com.lagradost.cloudstream3.syncproviders.providers.SimklApi.Companion.MediaObject
-import com.lagradost.cloudstream3.syncproviders.providers.SimklApi.Companion.SyncServices
+import com.lagradost.cloudstream3.SimklSyncServices
 import com.lagradost.cloudstream3.syncproviders.providers.SimklApi.Companion.getPosterUrl
 import com.lagradost.cloudstream3.utils.AppUtils
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
@@ -183,7 +183,7 @@ class Simkl(val plugin: UltimaPlugin) : MainAPI() {
         val data =
                 app.get("$apiUrl/tv/$id?client_id=$auth&extended=full")
                         .parsedSafe<SimklMediaObject>()
-                        ?: api.searchByIds(mapOf(SyncServices.Simkl to id))
+                        ?: api.searchByIds(mapOf(SimklSyncServices.Simkl to id))
                                 ?.get(0)
                                 ?.toSimklMediaObject()
                                 ?: throw ErrorLoadingException("Unable to load data")

@@ -19,7 +19,7 @@ import androidx.lifecycle.coroutineScope
 import com.RowdyAvocado.WatchSyncUtils.WatchSyncCreds
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lagradost.cloudstream3.CommonActivity.showToast
-import com.lagradost.cloudstream3.utils.AppUtils.setDefaultFocus
+import com.lagradost.cloudstream3.utils.AppContextUtils.setDefaultFocus
 import kotlinx.coroutines.*
 
 private const val ARG_PARAM1 = "param1"

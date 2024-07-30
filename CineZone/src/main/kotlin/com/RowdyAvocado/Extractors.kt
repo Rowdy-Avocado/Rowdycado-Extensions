@@ -32,9 +32,9 @@ class CineZoneExtractor : ExtractorApi() {
             } catch (e: Exception) {}
         }
     }
-}
 
-class AnyMyCloud(hostUrl: String) : Vidplay() {
-    override val name = "MyCloud"
-    override val mainUrl = hostUrl
+    class AnyMyCloud(hostUrl: String) : Vidplay() {
+        override val name = "MyCloud"
+        override val mainUrl = hostUrl
+    }
 }

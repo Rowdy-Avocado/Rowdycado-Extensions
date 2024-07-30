@@ -16,11 +16,11 @@ object CineZoneUtils {
 
         var vrf = cipher.doFinal(input.toByteArray())
         vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        vrf = vrf.reversed().toByteArray()
-        vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        vrf = vrfShift(vrf)
-        val stringVrf = vrf.toString(Charsets.UTF_8)
+        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
+        // vrf = vrf.reversed().toByteArray()
+        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
+        // vrf = vrfShift(vrf)
+        val stringVrf = java.net.URLEncoder.encode(vrf.toString(Charsets.UTF_8), "utf-8")
         return stringVrf
     }
 
