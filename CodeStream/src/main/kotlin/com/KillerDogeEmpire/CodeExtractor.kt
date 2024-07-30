@@ -13,6 +13,7 @@ import com.lagradost.cloudstream3.mvvm.safeApiCall
 import com.lagradost.cloudstream3.network.WebViewResolver
 import com.lagradost.nicehttp.RequestBodyTypes
 import kotlinx.coroutines.delay
+import com.lagradost.cloudstream3.extractors.AnyVidplay
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -1029,7 +1030,8 @@ object CodeExtractor : CodeStream() {
             "$vidsrctoAPI/embed/tv/$imdbId/$season/$episode"
         }
         Log.d("Phisher ID",url)
-        loadExtractor(url, subtitleCallback, callback)
+        val host = getBaseUrl(url)
+        AnyVidplay(host).getUrl(url, host, subtitleCallback, callback)
     }
 
     suspend fun invokeKisskh(

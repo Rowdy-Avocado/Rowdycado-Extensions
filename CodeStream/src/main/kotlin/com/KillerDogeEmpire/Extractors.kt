@@ -25,6 +25,7 @@ import com.lagradost.cloudstream3.utils.AppUtils
 import com.lagradost.cloudstream3.utils.ExtractorApi
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.M3u8Helper
+import okhttp3.FormBody
 
 open class Playm4u : ExtractorApi() {
     override val name = "Playm4u"
@@ -194,10 +195,10 @@ open class M4ufree : ExtractorApi() {
 
 }
 
-open class VCloud : ExtractorApi() {
+class VCloud : ExtractorApi() {
     override val name: String = "V-Cloud"
     override val mainUrl: String = "https://vcloud.lol"
-    override val requiresReferer = true
+    override val requiresReferer = false
 
     override suspend fun getUrl(
         url: String,
@@ -205,40 +206,55 @@ open class VCloud : ExtractorApi() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
-        val res = app.get(url)
-        val doc = res.document
-        val changedLink = doc.selectFirst("script:containsData(url =)")?.data()?.let {
-            val regex = """url\s*=\s*['"](.*)['"];""".toRegex()
-            val doc2 = app.get(regex.find(it)?.groupValues?.get(1) ?: return).text
-            regex.find(doc2)?.groupValues?.get(1)?.substringAfter("r=")
-        }
-        val header = doc.selectFirst("div.card-header")?.text()
-        app.get(
-            base64Decode(changedLink ?: return), cookies = res.cookies, headers = mapOf(
-                "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
-            )
-        ).document.select("p.text-success ~ a").apmap {
+        val doc = app.get(url).document
+        val scriptTag = doc.selectFirst("script:containsData(url)").toString()
+        val urlValue = Regex("var url = '([^']*)'").find(scriptTag) ?. groupValues ?. get(1) ?: ""
+        val document = app.get(urlValue).document
+
+        val size = document.selectFirst("i#size") ?. text()
+        val div = document.selectFirst("div.card-body")
+        val header = document.selectFirst("div.card-header") ?. text()
+        div.select("a").apmap {
             val link = it.attr("href")
-            if (link.contains("workers.dev") || it.text().contains("[Server : 1]") || link.contains(
-                    "/dl.php?"
-                )
-            ) {
+            if (link.contains("pixeldra")) {
                 callback.invoke(
                     ExtractorLink(
-                        this.name,
-                        this.name,
+                        "Pixeldrain",
+                        "Pixeldrain $size",
                         link,
                         "",
                         getIndexQuality(header),
-                        INFER_TYPE
                     )
                 )
-            } else {
-                val direct = if (link.contains("gofile.io")) app.get(link).url else link
-                loadExtractor(direct, referer, subtitleCallback, callback)
+            }
+            else if(link.contains("dl.php")) {
+                val response = app.get(link, allowRedirects = false)
+                val downloadLink = response.headers["location"].toString().split("link=").getOrNull(1) ?: link
+                callback.invoke(
+                    ExtractorLink(
+                        "V-Cloud[Download]",
+                        "V-Cloud[Download] $size",
+                        downloadLink,
+                        "",
+                        getIndexQuality(header),
+                    )
+                )
+            }
+            else if(link.contains(".dev")) {
+                callback.invoke(
+                    ExtractorLink(
+                        "V-Cloud",
+                        "V-Cloud $size",
+                        link,
+                        "",
+                        getIndexQuality(header),
+                    )
+                )
+            }
+            else {
+                loadExtractor(link, subtitleCallback, callback)
             }
         }
-
     }
 
     private fun getIndexQuality(str: String?): Int {
@@ -853,21 +869,52 @@ open class Bollyflix : ExtractorApi() {
             else
                 if (it.select("a").text().contains("DRIVEBOT DOWNLOAD"))
                 {
-                    /*
-                    val link=it.attr("href")
-                    //Log.d("Phisher index index",link.toString())
-                    val token=link.substringAfter("id=")
-                    Log.d("Phisher index index",link.toString())
-                    app.get(link).document.select("button").forEach {
-                        Log.d("Phisher index index",it.toString())
-                        val onclick=it.attr("onclick").substringAfter("('").substringBefore("',")
-                        Log.d("Phisher index index",onclick.toString())
-                        val posttoken=app.get("$onclick?id=$token").text.substringAfter("token', '").substringBefore("'")
-                        val index=app.post("$onclick?id=$token", data = mapOf("token" to posttoken)).parsedSafe<Bollyflixparse>()?.url ?:""
-                        Log.d("Phisher index index","$onclick?id=$token")
-                        Log.d("Phisher index index",index)
+
+                    val driveLink = it.attr("href")
+                    val id = driveLink.substringAfter("id=").substringBefore("&")
+                    val doId = driveLink.substringAfter("do=").substringBefore("==")
+                    val indexbotlink = "https://indexbot.lol/download?id=${id}&do=${doId}"
+                    val indexbotresponse = app.get(indexbotlink, timeout = 60L)
+                    if(indexbotresponse.isSuccessful) {
+                        val cookiesSSID = indexbotresponse.cookies["PHPSESSID"]
+                        val indexbotDoc = indexbotresponse.document
+                        val token = Regex("""formData\.append\('token', '([a-f0-9]+)'\)""").find(indexbotDoc.toString()) ?. groupValues ?. get(1) ?: "token"
+                        val postId = Regex("""fetch\('\/download\?id=([a-zA-Z0-9\/+]+)'""").find(indexbotDoc.toString()) ?. groupValues ?. get(1) ?: "postId"
+
+                        val requestBody = FormBody.Builder()
+                            .add("token", token)
+                            .build()
+
+                        val headers = mapOf(
+                            "Referer" to indexbotlink
+                        )
+
+                        val cookies = mapOf(
+                            "PHPSESSID" to "$cookiesSSID",
+                        )
+
+                        val response = app.post(
+                            "https://indexbot.lol/download?id=${postId}",
+                            requestBody = requestBody,
+                            headers = headers,
+                            cookies = cookies,
+                            timeout = 60L
+                        ).toString()
+
+                        var downloadlink = Regex("url\":\"(.*?)\"").find(response) ?. groupValues ?. get(1) ?: ""
+
+                        downloadlink = downloadlink.replace("\\", "")
+
+                        callback.invoke(
+                            ExtractorLink(
+                                "Bollyflix[IndexBot]",
+                                "Bollyflix[IndexBot] $tagquality",
+                                downloadlink,
+                                "https://indexbot.lol/",
+                                getQualityFromName(tags)
+                            )
+                        )
                     }
-                     */
                 }
                 else
                     if (it.select("a").text().contains("Instant Download"))
