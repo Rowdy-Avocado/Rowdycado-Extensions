@@ -9,7 +9,7 @@
 - [Cucumber](/README.cucumber.md)
 - [Corn](/README.corn.md)
 
-Listen to Audio Books. Add this repository using this shortcode: [Rowdycado](https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/repo.json)
+Listen to Audio Books. Add this repository using this shortcode: [rowdycado](https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/builds/repo.json)
 
 ~Click~ eat the avocado to install it on your phone:
 
