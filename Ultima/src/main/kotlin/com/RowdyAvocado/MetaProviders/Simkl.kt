@@ -183,10 +183,7 @@ class Simkl(val plugin: UltimaPlugin) : MainAPI() {
         val data =
                 app.get("$apiUrl/tv/$id?client_id=$auth&extended=full")
                         .parsedSafe<SimklMediaObject>()
-                        ?: api.searchByIds(mapOf(SimklSyncServices.Simkl to id))
-                                ?.get(0)
-                                ?.toSimklMediaObject()
-                                ?: throw ErrorLoadingException("Unable to load data")
+                        ?: throw ErrorLoadingException("Unable to load data")
         val year = data.year
         val posterUrl = getPosterUrl(data.poster ?: "")
         return if (data.type.equals("movie")) {

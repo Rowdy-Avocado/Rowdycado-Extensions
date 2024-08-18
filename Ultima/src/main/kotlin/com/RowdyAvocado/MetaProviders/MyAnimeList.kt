@@ -65,7 +65,7 @@ class MyAnimeList(val plugin: UltimaPlugin) : MainAPI() {
     private suspend fun Recommendations.toSearchResponse(): SearchResponse {
         val node = this.node ?: throw Exception("Unable to parse Recommendation")
         val url = "$mainUrl/${node.id}"
-        val posterUrl = node.main_picture?.large
+        val posterUrl = node.mainPicture?.large
         val res = newAnimeSearchResponse(node.title, url) { this.posterUrl = posterUrl }
         return res
     }
