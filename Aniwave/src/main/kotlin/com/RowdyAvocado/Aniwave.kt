@@ -51,7 +51,7 @@ class Aniwave : MainAPI() {
     override val hasQuickSearch = true
 
     companion object {
-        var keys: Pair<String, String>? = null
+        var keys: Keys? = null
 
         fun encode(input: String): String =
                 java.net.URLEncoder.encode(input, "utf-8").replace("+", "%2B")
@@ -59,12 +59,10 @@ class Aniwave : MainAPI() {
         private fun decode(input: String): String = java.net.URLDecoder.decode(input, "utf-8")
     }
 
-    private suspend fun getKeys(): Pair<String, String> {
+    private suspend fun getKeys(): Keys {
         if (keys == null) {
-            val res =
-                    app.get("https://rowdy-avocado.github.io/multi-keys/").parsedSafe<Keys>()
+            keys = app.get("https://rowdy-avocado.github.io/multi-keys/").parsedSafe<Keys>()
                             ?: throw Exception("Unable to fetch keys")
-            keys = res.keys.first() to res.keys.last()
         }
         return keys!!
     }
@@ -134,7 +132,7 @@ class Aniwave : MainAPI() {
         val title =
                 (info.selectFirst(".title") ?: info.selectFirst(".d-title"))?.text()
                         ?: throw ErrorLoadingException("Could not find title")
-        val vrf = AniwaveUtils.vrfEncrypt(getKeys().first, id)
+        val vrf = AniwaveUtils.vrfEncrypt(getKeys(), id)
         val episodeListUrl = "$mainUrl/ajax/episode/list/$id?$vrf"
         val body =
                 app.get(episodeListUrl).parsedSafe<Response>()?.getHtml()
@@ -322,7 +320,7 @@ class Aniwave : MainAPI() {
             callback: (ExtractorLink) -> Unit
     ): Boolean {
         val parseData = AppUtils.parseJson<SubDubInfo>(data)
-        val datavrf = AniwaveUtils.vrfEncrypt(getKeys().first, parseData.ID)
+        val datavrf = AniwaveUtils.vrfEncrypt(getKeys(), parseData.ID)
         val one = app.get("$mainUrl/ajax/server/list/${parseData.ID}?$datavrf").parsed<Response>()
         val two = one.getHtml()
         val aas =
@@ -334,10 +332,10 @@ class Aniwave : MainAPI() {
                 }
         aas.amap { (sName, sId) ->
             try {
-                val vrf = AniwaveUtils.vrfEncrypt(getKeys().first, sId)
+                val vrf = AniwaveUtils.vrfEncrypt(getKeys(), sId)
                 val videncrr = app.get("$mainUrl/ajax/server/$sId?$vrf").parsed<Links>()
                 val encUrl = videncrr.result?.url ?: return@amap
-                val asss = AniwaveUtils.vrfDecrypt(getKeys().second, encUrl)
+                val asss = AniwaveUtils.vrfDecrypt(getKeys(), encUrl)
 
                 if (sName.equals("filemoon")) {
                     val res = app.get(asss)
@@ -471,5 +469,11 @@ class Aniwave : MainAPI() {
             @JsonProperty("type") val type: String
     )
 
-    data class Keys(@JsonProperty("aniwave") val keys: List<String>)
+    data class Keys(@JsonProperty("aniwave") val aniwave: List<Step>)
+
+    data class Step(
+            @JsonProperty("sequence") val sequence: Int,
+            @JsonProperty("method") val method: String,
+			@JsonProperty("keys") val keys: List<String>? = null 
+    )
 }

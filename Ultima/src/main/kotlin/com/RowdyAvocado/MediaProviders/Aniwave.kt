@@ -34,7 +34,7 @@ class AniwaveMediaProvider : MediaProvider() {
         val id =
                 searchPage.selectFirst("div.poster")?.attr("data-tip")?.split("?/")?.get(0)
                         ?: return
-        val idVrf = vrfEncrypt(getKeys().aniwave.first(), id)
+        val idVrf = vrfEncrypt(getKeys(), id)
         val seasonDataUrl = "$url/ajax/episode/list/$id?vrf=$idVrf"
         val seasonData = app.get(seasonDataUrl).parsedSafe<ApiResponseHTML>()?.html() ?: return
         val episodeIds =
@@ -44,7 +44,7 @@ class AniwaveMediaProvider : MediaProvider() {
                         .find { it.attr("data-num").equals(episode.toString()) }
                         ?.attr("data-ids")
                         ?: return
-        val episodeIdsVrf = vrfEncrypt(getKeys().aniwave.first(), episodeIds)
+        val episodeIdsVrf = vrfEncrypt(getKeys(), episodeIds)
         val episodeDataUrl = "$url/ajax/server/list/$episodeIds?vrf=$episodeIdsVrf"
         val episodeData = app.get(episodeDataUrl).parsedSafe<ApiResponseHTML>()?.html() ?: return
 
@@ -53,11 +53,11 @@ class AniwaveMediaProvider : MediaProvider() {
             it.select("li").apmap LinkLoader@{
                 val serverId = it.attr("data-sv-id")
                 val dataId = it.attr("data-link-id")
-                val dataIdVrf = vrfEncrypt(getKeys().aniwave.first(), dataId)
+                val dataIdVrf = vrfEncrypt(getKeys(), dataId)
                 val serverResUrl = "$url/ajax/server/$dataId?vrf=$dataIdVrf"
                 val serverRes = app.get(serverResUrl).parsedSafe<ApiResponseServer>()
                 val encUrl = serverRes?.result?.url ?: return@LinkLoader
-                val decUrl = vrfDecrypt(getKeys().aniwave.last(), encUrl)
+                val decUrl = vrfDecrypt(getKeys(), encUrl)
                 commonLinkLoader(
                         name,
                         mapServerName(serverId),
@@ -82,24 +82,52 @@ class AniwaveMediaProvider : MediaProvider() {
     }
 
     // #region - Encryption and Decryption handlers
-    fun vrfEncrypt(key: String, input: String): String {
+
+    private fun vrfEncrypt(keys: Keys, input: String): String {
+		var vrf = input
+		keys.aniwave.sortedBy { it.sequence }.forEach { step ->
+			when(step.method) {
+				"exchange" -> vrf = exchange(vrf, step.keys?.get(0) ?: "", step.keys?.get(1) ?: "")
+				"rc4" -> vrf = rc4Encryption(step.keys?.get(0) ?: "", vrf)
+				"reverse" -> vrf = vrf.reversed()
+				"base64" -> vrf = Base64.encode(vrf.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP).toString(Charsets.UTF_8)
+				"else" -> {}
+			}
+		}
+		vrf = java.net.URLEncoder.encode(vrf, "UTF-8")
+		return vrf
+    }
+
+    private fun vrfDecrypt(keys: Keys, input: String): String {
+		var vrf = input
+		keys.aniwave.sortedByDescending { it.sequence }.forEach { step ->
+			when(step.method) {
+				"exchange" -> vrf = exchange(vrf, step.keys?.get(1) ?: "", step.keys?.get(0) ?: "")
+				"rc4" -> vrf = rc4Decryption(step.keys?.get(0) ?: "", vrf)
+				"reverse" -> vrf = vrf.reversed()
+				"base64" -> vrf = Base64.decode(vrf, Base64.URL_SAFE).toString(Charsets.UTF_8)
+				"else" -> {}
+			}
+		}
+		return URLDecoder.decode(vrf, "utf-8")
+	}
+
+	private fun rc4Encryption(key: String, input: String): String {
         val rc4Key = SecretKeySpec(key.toByteArray(), "RC4")
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)
 
-        var vrf = cipher.doFinal(input.toByteArray())
-        vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
+        var output = cipher.doFinal(input.toByteArray())
+        output = Base64.encode(output, Base64.URL_SAFE or Base64.NO_WRAP)
         // vrf = Base64.encode(vrf, Base64.DEFAULT or Base64.NO_WRAP)
         // vrf = vrfShift(vrf)
         // // vrf = rot13(vrf)
         // vrf = vrf.reversed().toByteArray()
-        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        val stringVrf = vrf.toString(Charsets.UTF_8)
-        val final = java.net.URLEncoder.encode(stringVrf, "utf-8")
-        return final
-    }
+        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)]
+        return output.toString(Charsets.UTF_8)
+	}
 
-    fun vrfDecrypt(key: String, input: String): String {
+    private fun rc4Decryption(key: String, input: String): String {
         var vrf = input.toByteArray()
         vrf = Base64.decode(vrf, Base64.URL_SAFE)
 
@@ -108,8 +136,19 @@ class AniwaveMediaProvider : MediaProvider() {
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)
         vrf = cipher.doFinal(vrf)
 
-        return URLDecoder.decode(vrf.toString(Charsets.UTF_8), "utf-8")
+        return vrf.toString(Charsets.UTF_8)
     }
+	
+	fun exchange(input: String, key1: String, key2: String): String {
+		return input.map { i -> 
+			val index = key1.indexOf(i)
+			if (index != -1) {
+				key2[index]
+			} else {
+				i
+			}
+		}.joinToString("")
+	}
 
     @kotlin.ExperimentalStdlibApi
     private fun rot13(vrf: ByteArray): ByteArray {

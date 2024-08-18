@@ -48,10 +48,16 @@ abstract class MediaProvider {
 
     data class Keys(
             @JsonProperty("chillx") val chillx: List<String>,
-            @JsonProperty("aniwave") val aniwave: List<String>,
+            @JsonProperty("aniwave") val aniwave: List<Step>,
             @JsonProperty("cinezone") val cinezone: List<String>,
             @JsonProperty("vidplay") val vidplay: List<String>
-    )
+    ) {
+		data class Step(
+				@JsonProperty("sequence") val sequence: Int,
+				@JsonProperty("method") val method: String,
+				@JsonProperty("keys") val keys: List<String>? = null 
+    	)
+	}
 }
 
 @OptIn(kotlin.ExperimentalStdlibApi::class)
