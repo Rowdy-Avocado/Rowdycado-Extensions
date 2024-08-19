@@ -20,6 +20,7 @@ import com.lagradost.cloudstream3.newMovieLoadResponse
 import com.lagradost.cloudstream3.newMovieSearchResponse
 import com.lagradost.cloudstream3.newTvSeriesLoadResponse
 import com.lagradost.cloudstream3.utils.ExtractorLink
+import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
@@ -31,15 +32,13 @@ class CineZone(val plugin: CineZonePlugin) : MainAPI() {
     override val hasMainPage = true
 
     companion object {
-        var keys: Pair<String, String>? = null
+        var keys: Keys? = null
     }
 
-    private suspend fun getKeys(): Pair<String, String> {
+    private suspend fun getKeys(): Keys {
         if (keys == null) {
-            val res =
-                    app.get("https://rowdy-avocado.github.io/multi-keys/").parsedSafe<Keys>()
-                            ?: throw Exception("Unable to fetch keys")
-            keys = res.keys.first() to res.keys.last()
+            keys = app.get("https://rowdy-avocado.github.io/multi-keys/").parsedSafe<Keys>()
+						?: throw Exception("Unable to fetch keys")
         }
         return keys!!
     }
@@ -160,7 +159,7 @@ class CineZone(val plugin: CineZonePlugin) : MainAPI() {
     }
 
     private suspend fun apiCall(prefix: String, data: String): Document? {
-        val vrf = CineZoneUtils.vrfEncrypt(getKeys().first, data)
+        val vrf = CineZoneUtils.vrfEncrypt(getKeys(), data)
         val res = app.get("$mainUrl/ajax/$prefix/$data?vrf=$vrf").parsedSafe<APIResponseHTML>()
         if (res?.status == 200) {
             return res.html
@@ -169,10 +168,10 @@ class CineZone(val plugin: CineZonePlugin) : MainAPI() {
     }
 
     private suspend fun getServerUrl(data: String): String {
-        val vrf = CineZoneUtils.vrfEncrypt(getKeys().first, data)
+        val vrf = CineZoneUtils.vrfEncrypt(getKeys(), data)
         val res = app.get("$mainUrl/ajax/server/$data?vrf=$vrf").parsedSafe<APIResponseJSON>()
         if (res?.status == 200) {
-            return CineZoneUtils.vrfDecrypt(getKeys().second, res.result.url)
+            return CineZoneUtils.vrfDecrypt(getKeys(), res.result.url)
         }
         return ""
     }
@@ -218,5 +217,11 @@ class CineZone(val plugin: CineZonePlugin) : MainAPI() {
             @JsonProperty("kind") val kind: String,
     )
 
-    data class Keys(@JsonProperty("cinezone") val keys: List<String>)
+    data class Keys(@JsonProperty("cinezone") val cinezone: List<Step>)
+
+    data class Step(
+            @JsonProperty("sequence") val sequence: Int,
+            @JsonProperty("method") val method: String,
+			@JsonProperty("keys") val keys: List<String>? = null 
+    )
 }

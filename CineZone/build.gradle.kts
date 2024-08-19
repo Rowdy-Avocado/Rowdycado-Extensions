@@ -1,4 +1,4 @@
-version = 8
+version = 9
 
 cloudstream {
     description = "The best extension for watching movies and tv shows from CineZone"

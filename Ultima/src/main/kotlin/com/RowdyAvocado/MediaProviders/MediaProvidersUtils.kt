@@ -49,7 +49,7 @@ abstract class MediaProvider {
     data class Keys(
             @JsonProperty("chillx") val chillx: List<String>,
             @JsonProperty("aniwave") val aniwave: List<Step>,
-            @JsonProperty("cinezone") val cinezone: List<String>,
+            @JsonProperty("cinezone") val cinezone: List<Step>,
             @JsonProperty("vidplay") val vidplay: List<String>
     ) {
 		data class Step(

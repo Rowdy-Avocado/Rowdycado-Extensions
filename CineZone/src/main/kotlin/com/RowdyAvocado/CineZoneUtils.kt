@@ -5,36 +5,70 @@ import java.net.URI
 import java.net.URLDecoder
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
+import com.RowdyAvocado.CineZone.Keys
 
 @OptIn(kotlin.ExperimentalStdlibApi::class)
 object CineZoneUtils {
 
-    fun vrfEncrypt(key: String, input: String): String {
+    fun vrfEncrypt(keys: Keys, input: String): String {
+		var vrf = input
+		keys.cinezone.sortedBy { it.sequence }.forEach { step ->
+			when(step.method) {
+				"exchange" -> vrf = exchange(vrf, step.keys?.get(0) ?: "", step.keys?.get(1) ?: "")
+				"rc4" -> vrf = rc4Encryption(step.keys?.get(0) ?: "", vrf)
+				"reverse" -> vrf = vrf.reversed()
+				"base64" -> vrf = Base64.encode(vrf.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP).toString(Charsets.UTF_8)
+				"else" -> {}
+			}
+		}
+		vrf = java.net.URLEncoder.encode(vrf, "UTF-8")
+		return vrf
+    }
+
+    fun vrfDecrypt(keys: Keys, input: String): String {
+		var vrf = input
+		keys.cinezone.sortedByDescending { it.sequence }.forEach { step ->
+			when(step.method) {
+				"exchange" -> vrf = exchange(vrf, step.keys?.get(1) ?: "", step.keys?.get(0) ?: "")
+				"rc4" -> vrf = rc4Decryption(step.keys?.get(0) ?: "", vrf)
+				"reverse" -> vrf = vrf.reversed()
+				"base64" -> vrf = Base64.decode(vrf, Base64.URL_SAFE).toString(Charsets.UTF_8)
+				"else" -> {}
+			}
+		}
+		return URLDecoder.decode(vrf, "utf-8")
+	}
+
+	private fun rc4Encryption(key: String, input: String): String {
         val rc4Key = SecretKeySpec(key.toByteArray(), "RC4")
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)
+        var output = cipher.doFinal(input.toByteArray())
+        output = Base64.encode(output, Base64.URL_SAFE or Base64.NO_WRAP)
+        return output.toString(Charsets.UTF_8)
+	}
 
-        var vrf = cipher.doFinal(input.toByteArray())
-        vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        // vrf = vrf.reversed().toByteArray()
-        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)
-        // vrf = vrfShift(vrf)
-        val stringVrf = java.net.URLEncoder.encode(vrf.toString(Charsets.UTF_8), "utf-8")
-        return stringVrf
-    }
-
-    fun vrfDecrypt(key: String, input: String): String {
+    private fun rc4Decryption(key: String, input: String): String {
         var vrf = input.toByteArray()
         vrf = Base64.decode(vrf, Base64.URL_SAFE)
-
         val rc4Key = SecretKeySpec(key.toByteArray(), "RC4")
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)
         vrf = cipher.doFinal(vrf)
 
-        return URLDecoder.decode(vrf.toString(Charsets.UTF_8), "utf-8")
+        return vrf.toString(Charsets.UTF_8)
     }
+	
+	private fun exchange(input: String, key1: String, key2: String): String {
+		return input.map { i -> 
+			val index = key1.indexOf(i)
+			if (index != -1) {
+				key2[index]
+			} else {
+				i
+			}
+		}.joinToString("")
+	}
 
     private fun rot13(vrf: ByteArray): ByteArray {
         for (i in vrf.indices) {
