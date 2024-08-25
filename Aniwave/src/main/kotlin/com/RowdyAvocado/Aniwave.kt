@@ -93,6 +93,9 @@ class Aniwave : MainAPI() {
                     "$mainUrl/ajax/home/widget/updated-sub?page=" to "Recently Updated (SUB)",
                     "$mainUrl/ajax/home/widget/updated-dub?page=" to "Recently Updated (DUB)",
                     "$mainUrl/ajax/home/widget/updated-china?page=" to "Recently Updated (Chinese)",
+                    "$mainUrl/completed?page=" to "Completed",
+                    "$mainUrl/newest?page=" to "Recently Released",
+                    "$mainUrl/added?page=" to "Recently Added",
                     "$mainUrl/ajax/home/widget/random?page=" to "Random",
             )
 
