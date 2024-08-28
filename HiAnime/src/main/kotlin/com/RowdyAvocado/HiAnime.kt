@@ -111,6 +111,8 @@ class HiAnime : MainAPI() {
     override val mainPage =
             mainPageOf(
                     "$mainUrl/recently-updated?page=" to "Latest Episodes",
+                    "$mainUrl/filter?status=2&language=1&sort=recently_updated&page=" to "Recently Updated (SUB)",
+                    "$mainUrl/filter?status=2&language=2&sort=recently_updated&page=" to "Recently Updated (DUB)",
                     "$mainUrl/recently-added?page=" to "New On HiAnime",
                     "$mainUrl/top-airing?page=" to "Top Airing",
                     "$mainUrl/most-popular?page=" to "Most Popular",
