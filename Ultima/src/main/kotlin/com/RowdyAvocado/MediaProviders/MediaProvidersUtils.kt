@@ -4,6 +4,7 @@ import com.RowdyAvocado.MoviesDriveProvider.Mdrive
 import com.RowdyAvocado.UltimaUtils.Category
 import com.RowdyAvocado.UltimaUtils.LinkData
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lagradost.cloudstream3.ErrorLoadingException
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.amap
 import com.lagradost.cloudstream3.app
@@ -11,6 +12,7 @@ import com.lagradost.cloudstream3.extractors.DoodLaExtractor
 import com.lagradost.cloudstream3.extractors.Filesim
 import com.lagradost.cloudstream3.extractors.Jeniusplay
 import com.lagradost.cloudstream3.extractors.Mp4Upload
+import com.lagradost.cloudstream3.extractors.Rabbitstream
 import com.lagradost.cloudstream3.extractors.StreamWishExtractor
 import com.lagradost.cloudstream3.extractors.VidhideExtractor
 import com.lagradost.cloudstream3.extractors.Vidplay
@@ -52,12 +54,12 @@ abstract class MediaProvider {
             @JsonProperty("cinezone") val cinezone: List<Step>,
             @JsonProperty("vidplay") val vidplay: List<String>
     ) {
-		data class Step(
-				@JsonProperty("sequence") val sequence: Int,
-				@JsonProperty("method") val method: String,
-				@JsonProperty("keys") val keys: List<String>? = null 
-    	)
-	}
+        data class Step(
+                @JsonProperty("sequence") val sequence: Int,
+                @JsonProperty("method") val method: String,
+                @JsonProperty("keys") val keys: List<String>? = null
+        )
+    }
 }
 
 @OptIn(kotlin.ExperimentalStdlibApi::class)
@@ -80,7 +82,8 @@ object UltimaMediaProvidersUtils {
                     MultiMoviesProvider(),
                     AnitakuMediaProvider(),
                     MoviesDriveProvider(),
-                    VidSrcMediaProvider()
+                    VidSrcMediaProvider(),
+                    HiAnimeMediaProvider()
             )
 
     suspend fun invokeExtractors(
@@ -112,6 +115,7 @@ object UltimaMediaProvidersUtils {
         DoodStream,
         Gogo,
         MDrive,
+        Megacloud,
         Custom,
         NONE
     }
@@ -225,6 +229,9 @@ object UltimaMediaProvidersUtils {
                                 .getUrl(url, domain, subtitleCallback, callback)
                 ServerName.DoodStream ->
                         AnyDoodExtractor(providerName, dubStatus, domain)
+                                .getUrl(url, domain, subtitleCallback, callback)
+                ServerName.Megacloud ->
+                        AnyMegacloud(providerName, dubStatus, domain)
                                 .getUrl(url, domain, subtitleCallback, callback)
                 ServerName.Gogo -> {
                     val name =
@@ -360,5 +367,67 @@ class AnyMDrive(provider: String?, dubType: String?, domain: String = "") : Mdri
                     (if (dubType != null) ": $dubType" else "")
     override var mainUrl = domain
     override val requiresReferer = false
+}
+
+class AnyMegacloud(provider: String?, dubType: String?, domain: String = "") : Rabbitstream() {
+    override var name =
+            (if (provider != null) "$provider: " else "") +
+                    "Megacloud" +
+                    (if (dubType != null) ": $dubType" else "")
+    override var mainUrl = domain
+
+    override val embed = "embed-2/ajax/e-1"
+    private val scriptUrl = "$mainUrl/js/player/a/prod/e1-player.min.js"
+
+    override suspend fun extractRealKey(sources: String): Pair<String, String> {
+        val rawKeys = getKeys()
+        val sourcesArray = sources.toCharArray()
+
+        var extractedKey = ""
+        var currentIndex = 0
+        for (index in rawKeys) {
+            val start = index[0] + currentIndex
+            val end = start + index[1]
+            for (i in start until end) {
+                extractedKey += sourcesArray[i].toString()
+                sourcesArray[i] = ' '
+            }
+            currentIndex += index[1]
+        }
+
+        return extractedKey to sourcesArray.joinToString("").replace(" ", "")
+    }
+
+    private suspend fun getKeys(): List<List<Int>> {
+        val script = app.get(scriptUrl).text
+        fun matchingKey(value: String): String {
+            return Regex(",$value=((?:0x)?([0-9a-fA-F]+))")
+                    .find(script)
+                    ?.groupValues
+                    ?.get(1)
+                    ?.removePrefix("0x")
+                    ?: throw ErrorLoadingException("Failed to match the key")
+        }
+
+        val regex =
+                Regex(
+                        "case\\s*0x[0-9a-f]+:(?![^;]*=partKey)\\s*\\w+\\s*=\\s*(\\w+)\\s*,\\s*\\w+\\s*=\\s*(\\w+);"
+                )
+        val indexPairs =
+                regex.findAll(script)
+                        .toList()
+                        .map { match ->
+                            val matchKey1 = matchingKey(match.groupValues[1])
+                            val matchKey2 = matchingKey(match.groupValues[2])
+                            try {
+                                listOf(matchKey1.toInt(16), matchKey2.toInt(16))
+                            } catch (e: NumberFormatException) {
+                                emptyList()
+                            }
+                        }
+                        .filter { it.isNotEmpty() }
+
+        return indexPairs
+    }
 }
 // #endregion - Custom Extractors
