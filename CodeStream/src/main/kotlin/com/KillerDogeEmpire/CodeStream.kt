@@ -1,10 +1,11 @@
 package com.KillerDogeEmpire
 
-//import com.KillerDogeEmpire.CodeStream.invokeWatchasian
+//import com.KillerDogeEmpire.CodeExtractor.invokeWatchasian
 import android.util.Log
 import com.KillerDogeEmpire.CodeExtractor.invoke2embed
 import com.KillerDogeEmpire.CodeExtractor.invokeAllMovieland
 import com.KillerDogeEmpire.CodeExtractor.invokeAnimes
+import com.KillerDogeEmpire.CodeExtractor.invokeAnitaku
 import com.KillerDogeEmpire.CodeExtractor.invokeMoviesdrive
 import com.KillerDogeEmpire.CodeExtractor.invokeAoneroom
 import com.KillerDogeEmpire.CodeExtractor.invokeAsianHD
@@ -24,7 +25,7 @@ import com.KillerDogeEmpire.CodeExtractor.invokeFDMovies
 import com.KillerDogeEmpire.CodeExtractor.invokeFilmxy
 import com.KillerDogeEmpire.CodeExtractor.invokeFlixon
 import com.KillerDogeEmpire.CodeExtractor.invokeGhostx
-import com.KillerDogeEmpire.CodeExtractor.invokeGoku
+//import com.KillerDogeEmpire.CodeExtractor.invokeGoku
 import com.KillerDogeEmpire.CodeExtractor.invokeHdmovies4u
 import com.KillerDogeEmpire.CodeExtractor.invokeKimcartoon
 import com.KillerDogeEmpire.CodeExtractor.invokeKisskh
@@ -34,7 +35,7 @@ import com.KillerDogeEmpire.CodeExtractor.invokeMoflix
 import com.KillerDogeEmpire.CodeExtractor.invokeMoviehubAPI
 import com.KillerDogeEmpire.CodeExtractor.invokeMultiEmbed
 import com.KillerDogeEmpire.CodeExtractor.invokeMultimovies
-//import com.KillerDogeEmpire.CodeExtractor.invokeNepu
+//import com.HindiProviders.CodeExtractor.invokeNepu
 import com.KillerDogeEmpire.CodeExtractor.invokeNetmovies
 import com.KillerDogeEmpire.CodeExtractor.invokeNinetv
 import com.KillerDogeEmpire.CodeExtractor.invokeNoverse
@@ -55,6 +56,7 @@ import com.KillerDogeEmpire.CodeExtractor.invokeZshow
 import com.KillerDogeEmpire.CodeExtractor.invokekissasian
 import com.KillerDogeEmpire.CodeExtractor.invokePlaydesi
 import com.KillerDogeEmpire.CodeExtractor.invokeBollyflix
+import com.KillerDogeEmpire.CodeExtractor.invokemovies4u
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.Actor
 import com.lagradost.cloudstream3.ActorData
@@ -124,6 +126,7 @@ open class CodeStream : TmdbProvider() {
         const val kimcartoonAPI = "https://kimcartoon.li"
         const val hianimeAPI = "https://hianime.to"
         const val aniwaveAPI = "https://aniwave.to"
+        const val anitaku = "https://anitaku.pe"
         const val MultiEmbedAPI = "https://multiembed.mov"
         const val crunchyrollAPI = "https://beta-api.crunchyroll.com"
         const val kissKhAPI = "https://kisskh.co"
@@ -132,24 +135,23 @@ open class CodeStream : TmdbProvider() {
         const val KissasianAPI= "https://ww2.kissasian.vip"
         const val WatchasinAPI = "https://watchasia.to"
         const val m4uhdAPI = "https://ww1.streamm4u.ws"
-        const val rStreamAPI = "https://remotestream.cc"
         const val flixonAPI = "https://myflixer.lol"
         const val azseriesAPI = "https://azseries.org"
         const val PlaydesiAPI = "https://playdesi.net"
-        const val smashyStreamAPI = "https://embed.smashystream.com"
+        const val smashyStreamAPI = "https://api.smashystream.top"
         const val watchSomuchAPI = "https://watchsomuch.tv" // sub only
         const val cinemaTvAPI = BuildConfig.CINEMATV_API
         const val nineTvAPI = "https://moviesapi.club"
         const val nowTvAPI = "https://myfilestorage.xyz"
-        const val gokuAPI = "https://goku.sx"
+        //const val gokuAPI = "https://goku.sx"
         const val zshowAPI = BuildConfig.ZSHOW_API
         const val ridomoviesAPI = "https://ridomovies.tv"
         const val emoviesAPI = "https://emovies.si"
-        const val multimoviesAPI = BuildConfig.MultiMovies_API
-        const val netmoviesAPI = "https://netmovies.to"
+        const val multimoviesAPI = "https://multimovies.sbs"
+        const val netmoviesAPI = "https://web.netmovies.to"
         const val allmovielandAPI = "https://allmovieland.fun"
         const val doomoviesAPI = "https://doomovies.net"
-        const val vidsrctoAPI = "https://vidsrc.to"
+        const val vidsrctoAPI = "https://vidsrc.cc"
         const val dramadayAPI = "https://dramaday.me"
         const val animetoshoAPI = "https://animetosho.org"
         const val showflixAPI = "https://showflix.xyz"
@@ -157,20 +159,21 @@ open class CodeStream : TmdbProvider() {
         const val watchCartoonAPI = "https://www1.watchcartoononline.bz"
         const val moflixAPI = "https://moflix-stream.xyz"
         const val zoechipAPI = "https://www1.zoechip.to"
-        //        const val nepuAPI = "https://nepu.to"
-        const val DramacoolAPI = "https://dramacool.city"
+        //const val nepuAPI = "https://nepu.to"
+        const val DramacoolAPI = "https://watchasia.to"
         const val fdMoviesAPI = "https://freedrivemovie.com"
-        const val uhdmoviesAPI = "https://uhdmovies.tel"
-        const val topmoviesAPI = "https://topmovies.tel"
-        const val MoviesmodAPI= "https://moviesmod.band"
-        const val hdmovies4uAPI = "https://hdmovies4u.rsvp"
-        const val vegaMoviesAPI = "https://vegamovies.nz"
-        const val dotmoviesAPI = "https://luxmovies.live"
+        const val uhdmoviesAPI = "https://uhdmovies.mov"
+        const val topmoviesAPI = "https://topmovies.mov"
+        const val MoviesmodAPI= "https://moviesmod.day"
+        const val hdmovies4uAPI = "https://hdmovies4u.boston"
+        const val vegaMoviesAPI = "https://vegamovies.fans"
+        const val dotmoviesAPI = "https://luxmovies.lol"
         const val tvMoviesAPI = "https://www.tvseriesnmovies.com"
-        const val dahmerMoviesAPI="https://worker-mute-fog-66ae.ihrqljobdq.workers.dev"
-        const val MovieDrive_API=BuildConfig.MovieDrive_API
+        const val dahmerMoviesAPI="https://a.datadiff.us.kg"
+        const val MovieDrive_API="https://moviesdrive.world"
         const val Asiandrama_API=BuildConfig.AsianDrama_API
-        const val bollyflixAPI = "https://bollyflix.band"
+        const val bollyflixAPI = "https://bollyflix.beer"
+        const val movies4u = "https://movies4u.poker"
         fun getType(t: String?): TvType {
             return when (t) {
                 "movie" -> TvType.Movie
@@ -342,7 +345,10 @@ open class CodeStream : TmdbProvider() {
                     this.backgroundPosterUrl = bgPoster
                     this.year = year
                     this.plot = res.overview
-                    this.tags = keywords.takeIf { !it.isNullOrEmpty() } ?: genres
+                    this.tags = keywords
+                        ?.map { word -> word.replaceFirstChar { it.titlecase() } }
+                        ?.takeIf { it.isNotEmpty() }
+                        ?: genres
                     this.rating = rating
                     this.showStatus = getStatus(res.status)
                     this.recommendations = recommendations
@@ -358,7 +364,11 @@ open class CodeStream : TmdbProvider() {
                     this.backgroundPosterUrl = bgPoster
                     this.year = year
                     this.plot = res.overview
-                    this.tags = keywords.takeIf { !it.isNullOrEmpty() } ?: genres
+                    this.tags = keywords
+                        ?.map { word -> word.replaceFirstChar { it.titlecase() } }
+                        ?.takeIf { it.isNotEmpty() }
+                        ?: genres
+
                     this.rating = rating
                     this.showStatus = getStatus(res.status)
                     this.recommendations = recommendations
@@ -396,7 +406,11 @@ open class CodeStream : TmdbProvider() {
                 this.year = year
                 this.plot = res.overview
                 this.duration = res.runtime
-                this.tags = keywords.takeIf { !it.isNullOrEmpty() } ?: genres
+                this.tags = keywords
+                    ?.map { word -> word.replaceFirstChar { it.titlecase() } }
+                    ?.takeIf { it.isNotEmpty() }
+                    ?: genres
+
                 this.rating = rating
                 this.recommendations = recommendations
                 this.actors = actors
@@ -415,7 +429,6 @@ open class CodeStream : TmdbProvider() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
-
         val res = parseJson<LinkData>(data)
         Log.d("Test1", "$res")
         println(res)
@@ -429,17 +442,19 @@ open class CodeStream : TmdbProvider() {
                 callback
             )
         },
-            {
-                invokeGoku(
-                    res.title,
-                    res.year,
-                    res.season,
-                    res.lastSeason,
-                    res.episode,
-                    subtitleCallback,
-                    callback
-                )
-            },
+            /*
+                {
+                   invokeGoku(
+                       res.title,
+                       res.year,
+                        res.season,
+                        res.lastSeason,
+                        res.episode,
+                        subtitleCallback,
+                        callback
+                   )
+                },
+             */
             {
                 invokeVidSrc(res.id, res.season, res.episode, subtitleCallback,callback)
             },
@@ -455,6 +470,18 @@ open class CodeStream : TmdbProvider() {
                     res.epsTitle,
                     res.date,
                     res.airedDate,
+                    res.season,
+                    res.episode,
+                    subtitleCallback,
+                    callback
+                )
+            },
+            {
+                if (res.isAnime) invokeAnitaku(
+                    res.title,
+                    res.epsTitle,
+                    res.date,
+                    res.year,
                     res.season,
                     res.episode,
                     subtitleCallback,
@@ -570,7 +597,8 @@ open class CodeStream : TmdbProvider() {
                     res.year,
                     res.season,
                     res.episode,
-                    callback
+                    callback,
+                    subtitleCallback
                 )
             },
             {
@@ -596,12 +624,20 @@ open class CodeStream : TmdbProvider() {
                 )
             },
             {
-                invokeBollyflix(
+                if (!res.isAnime) invokeBollyflix(
                     res.title,
                     res.year,
                     res.season,
                     res.lastSeason,
                     res.episode,
+                    subtitleCallback,
+                    callback
+                )
+            },
+            {
+                if (!res.isAnime) invokemovies4u(
+                    res.title,
+                    res.year,
                     subtitleCallback,
                     callback
                 )
@@ -617,9 +653,6 @@ open class CodeStream : TmdbProvider() {
             },
             {
                 if (!res.isAnime) invokeTvMovies(res.title, res.season, res.episode, callback)
-            },
-            {
-                //          if (!res.isAnime) invokeRStream(res.id, res.season, res.episode, callback)
             },
             {
                 if (!res.isAnime) invokeFlixon(
@@ -708,7 +741,6 @@ open class CodeStream : TmdbProvider() {
                     res.imdbId,
                     res.season,
                     res.episode,
-                    subtitleCallback,
                     callback
                 )
             },
@@ -734,7 +766,7 @@ open class CodeStream : TmdbProvider() {
                 )
             },
             {
-                if (!res.isAnime && res.isBollywood) invokeDotmovies(
+                if (!res.isAnime) invokeDotmovies(
                     res.title,
                     res.year,
                     res.season,
@@ -859,7 +891,7 @@ open class CodeStream : TmdbProvider() {
                         callback
                     )
                 },
-            
+
              */
             {
                 if (!res.isAnime) invokePlaydesi(

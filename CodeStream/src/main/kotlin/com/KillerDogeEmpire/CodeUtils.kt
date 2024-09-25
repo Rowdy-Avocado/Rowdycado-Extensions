@@ -26,7 +26,6 @@ import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import okio.ByteString.Companion.decodeBase64
 import org.jsoup.nodes.Document
 import java.math.BigInteger
 import java.net.*
@@ -193,14 +192,25 @@ suspend fun extractBackupUHD(url: String): String? {
 }
 
 @Suppress("NAME_SHADOWING")
-suspend fun extractResumeUHD(url: String): String? {
+suspend fun extractResumeUHD(url: String): String {
     app.get("https://driveleech.org$url").document.let {
         val url = it.selectFirst("a.btn.btn-success")?.attr("href").toString()
         return url
     }
 }
 
-suspend fun extractPixeldrainUHD(url: String): String? {
+suspend fun extractCFUHD(url: String): MutableList<String> {
+    val CFlinks= mutableListOf<String>()
+    app.get("https://driveleech.org$url?type=1").document.let {
+        CFlinks+=it.select("div.mb-4 a").attr("href")
+    }
+    app.get("https://driveleech.org$url?type=2").document.let {
+        CFlinks+=it.select("div.mb-4 a").attr("href")
+    }
+    return CFlinks
+}
+
+suspend fun extractPixeldrainUHD(url: String): String {
     app.get("https://driveleech.org$url").document.let {
         return it.selectFirst("a.btn.btn-outline-info:contains(pixel)")?.attr("href").toString()
     }
@@ -1150,38 +1160,11 @@ fun getIndexSize(str: String?): String? {
     return Regex("(?i)([\\d.]+\\s*(?:gb|mb))").find(str ?: "")?.groupValues?.getOrNull(1)?.trim()
 }
 
-suspend fun ExtractMdrive(url: String): MutableList<String> {
+suspend fun extractMdrive(url: String): List<String> {
     val doc= app.get(url).document
-    val linklist= mutableListOf(String())
-    doc.select("h5 > a").forEach {
-        val link=it.attr("href").replace("lol","day")
-        if (!link.contains("gdtot"))
-        {
-            val mainpage= app.get(link).document.selectFirst("a.btn.btn-primary")?.attr("href").toString()
-            if (!mainpage.contains("https://"))
-            {
-                val newlink= "https://hubcloud.day$mainpage"
-                linklist.add(newlink)
-            }
-            else
-            {
-                linklist.add(mainpage)
-            }
-        }
-    }
-    return linklist
-}
-
-suspend fun ExtractMdriveSeries(url: String): MutableList<String> {
-    val linklist= mutableListOf(String())
-    val mainpage = app.get(url.replace("lol","day")).document.selectFirst("a.btn.btn-primary")?.attr("href").toString()
-    if (!mainpage.contains("https://")) {
-        val newlink = "https://hubcloud.day$mainpage"
-        linklist.add(newlink)
-    } else {
-        linklist.add(mainpage)
-    }
-    return linklist
+    val href=doc.select("h5 > a,h3 > a").map { it.attr("href") }
+    Log.d("Phisher1 it",href.toString())
+    return href
 }
 
 

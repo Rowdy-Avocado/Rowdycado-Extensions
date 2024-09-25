@@ -4,19 +4,18 @@ import com.KillerDogeEmpire.CodeExtractor.invoke2embed
 import com.KillerDogeEmpire.CodeExtractor.invokeAllMovieland
 import com.KillerDogeEmpire.CodeExtractor.invokeAnimes
 import com.KillerDogeEmpire.CodeExtractor.invokeAoneroom
+import com.KillerDogeEmpire.CodeExtractor.invokeBollyflix
 import com.KillerDogeEmpire.CodeExtractor.invokeDoomovies
 import com.KillerDogeEmpire.CodeExtractor.invokeDramaday
 import com.KillerDogeEmpire.CodeExtractor.invokeDreamfilm
 import com.KillerDogeEmpire.CodeExtractor.invokeFilmxy
 import com.KillerDogeEmpire.CodeExtractor.invokeFlixon
-import com.KillerDogeEmpire.CodeExtractor.invokeGoku
 import com.KillerDogeEmpire.CodeExtractor.invokeKimcartoon
 import com.KillerDogeEmpire.CodeExtractor.invokeKisskh
 import com.KillerDogeEmpire.CodeExtractor.invokeLing
 import com.KillerDogeEmpire.CodeExtractor.invokeM4uhd
 import com.KillerDogeEmpire.CodeExtractor.invokeNinetv
 import com.KillerDogeEmpire.CodeExtractor.invokeNowTv
-import com.KillerDogeEmpire.CodeExtractor.invokeRStream
 import com.KillerDogeEmpire.CodeExtractor.invokeRidomovies
 //import com.KillerDogeEmpire.CodeExtractor.invokeSmashyStream
 import com.KillerDogeEmpire.CodeExtractor.invokeDumpStream
@@ -37,14 +36,14 @@ import com.KillerDogeEmpire.CodeExtractor.invokeZshow
 import com.KillerDogeEmpire.CodeExtractor.invokeMoviesdrive
 import com.KillerDogeEmpire.CodeExtractor.invokeVegamovies
 import com.KillerDogeEmpire.CodeExtractor.invokeDotmovies
-import com.KillerDogeEmpire.CodeStream
+import com.KillerDogeEmpire.CodeExtractor.invokeTopMovies
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.argamap
 import com.lagradost.cloudstream3.utils.AppUtils
 import com.lagradost.cloudstream3.utils.ExtractorLink
 
 class CodeStreamLite : CodeStream() {
-    override var name = "CodeStream-Lite"
+    override var name = "StreamPlay-Lite"
 
     override suspend fun loadLinks(
         data: String,
@@ -56,16 +55,13 @@ class CodeStreamLite : CodeStream() {
         val res = AppUtils.parseJson<LinkData>(data)
 
         argamap(
-            {
-                if (!res.isAnime) invokeMoflix(res.id, res.season, res.episode, callback)
-            },
-            {
-                if (!res.isAnime) invokeWatchsomuch(
-                    res.imdbId,
-                    res.season,
-                    res.episode,
-                    subtitleCallback
-                )
+            { if (!res.isAnime)
+                invokeM4uhd(res.title, res.airedYear?: res.year, res.season, res.episode,subtitleCallback,callback)
+                invokeBollyflix(res.title,res.year,res.season,res.lastSeason,res.episode,subtitleCallback,callback)
+                invokeMoflix(res.id, res.season, res.episode, callback)
+                invokeWatchsomuch(res.imdbId,res.season,res.episode,subtitleCallback)
+                invokeMoviesdrive(res.title,res.season,res.episode,res.year,subtitleCallback,callback)
+                invokeTopMovies(res.title,res.year,res.season,res.lastSeason,res.episode,subtitleCallback,callback)
             },
             {
                 invokeDumpStream(
@@ -81,17 +77,6 @@ class CodeStreamLite : CodeStream() {
                 if (!res.isAnime) invokeNinetv(
                     res.id,
                     res.season,
-                    res.episode,
-                    subtitleCallback,
-                    callback
-                )
-            },
-            {
-                invokeGoku(
-                    res.title,
-                    res.year,
-                    res.season,
-                    res.lastSeason,
                     res.episode,
                     subtitleCallback,
                     callback
@@ -194,15 +179,13 @@ class CodeStreamLite : CodeStream() {
                         ?: res.year, res.season, res.episode, subtitleCallback, callback
                 )
             },
-            {
+            /*{
                 if (!res.isAnime) invokeM4uhd(
                     res.title, res.airedYear
                         ?: res.year, res.season, res.episode, subtitleCallback, callback
                 )
             },
-            {
-                if (!res.isAnime) invokeRStream(res.id, res.season, res.episode, callback)
-            },
+             */
             {
                 if (!res.isAnime) invokeFlixon(
                     res.id,
@@ -336,16 +319,6 @@ class CodeStreamLite : CodeStream() {
             }
 
              */
-            {
-                if (!res.isAnime) invokeMoviesdrive(
-                    res.title,
-                    res.season,
-                    res.episode,
-                    res.year,
-                    subtitleCallback,
-                    callback
-                )
-            },
             {
                 if (!res.isAnime) invokeVegamovies(
                     res.title,
