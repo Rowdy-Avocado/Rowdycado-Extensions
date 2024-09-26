@@ -3410,4 +3410,4 @@ object CodeExtractor : CodeStream() {
                 loadExtractor(links,"Movies4u",subtitleCallback, callback)
         }
     }
-}}
+}
