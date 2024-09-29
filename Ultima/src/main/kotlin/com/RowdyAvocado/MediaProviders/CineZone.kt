@@ -18,7 +18,7 @@ import org.jsoup.nodes.Document
 
 class CineZoneMediaProvider : MediaProvider() {
     override val name = "CineZone"
-    override val domain = "https://cinezone.to"
+    override val domain = "https://ww1.cinezone.city"
     override val categories = listOf(Category.MEDIA)
 
     override suspend fun loadContent(
