@@ -11,7 +11,7 @@ import com.lagradost.cloudstream3.utils.ExtractorLink
 
 class AnitakuMediaProvider : MediaProvider() {
     override val name = "Anitaku"
-    override val domain = "https://anitaku.so"
+    override val domain = "https://anitaku.pe"
     override val categories = listOf(Category.ANIME)
     private val apiUrl = "https://ajax.gogocdn.net"
 
