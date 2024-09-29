@@ -18,7 +18,7 @@ import org.jsoup.nodes.Document
 
 class AniwaveMediaProvider : MediaProvider() {
     override val name = "Aniwave"
-    override val domain = "https://aniwave.to"
+    override val domain = "https://aniwave.cool"
     override val categories = listOf(Category.ANIME)
 
     override suspend fun loadContent(
