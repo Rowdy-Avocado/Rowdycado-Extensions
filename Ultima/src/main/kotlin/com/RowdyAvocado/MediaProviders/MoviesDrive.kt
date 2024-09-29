@@ -15,7 +15,7 @@ import com.lagradost.cloudstream3.utils.loadExtractor
 
 class MoviesDriveProvider : MediaProvider() {
     override val name = "MoviesDrive"
-    override val domain = "https://moviesdrive.online"
+    override val domain = "https://moviesdrive.world"
     override val categories = listOf(Category.MEDIA)
 
     override suspend fun loadContent(
