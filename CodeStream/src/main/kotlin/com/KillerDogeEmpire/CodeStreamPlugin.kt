@@ -18,7 +18,7 @@ import com.lagradost.cloudstream3.extractors.Vidplay
 import com.lagradost.cloudstream3.extractors.Voe
 
 @CloudstreamPlugin
-class StreamPlayPlugin: Plugin() {
+class CodeStreamPlugin: Plugin() {
     override fun load(context: Context) {
         // All providers should be added in this manner. Please don't edit the providers list directly.
         registerMainAPI(CodeStream())
