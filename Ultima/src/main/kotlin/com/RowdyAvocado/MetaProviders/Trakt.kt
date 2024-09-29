@@ -16,7 +16,7 @@ import com.lagradost.cloudstream3.utils.ExtractorLink
 class Trakt(val plugin: UltimaPlugin) : TraktProvider() {
     override var name = "Trakt"
     override var mainUrl = "https://trakt.tv"
-    override var supportedTypes = setOf(TvType.Movie, TvType.TvSeries, TvType.AsianDrama)
+    override var supportedTypes = setOf(TvType.Movie, TvType.TvSeries, TvType.AsianDrama, TvType.Anime, TvType.AnimeMovie)
     override var lang = "en"
     override val supportedSyncNames = setOf(SyncIdName.Trakt)
     override val hasMainPage = true
