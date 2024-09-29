@@ -25,7 +25,7 @@ import org.jsoup.Jsoup
 
 class AnitakuProvider : MainAPI() {
     companion object {
-        val mainUrl = "https://anitaku.to"
+        val mainUrl = "https://anitaku.pe"
         val name = "Anitaku"
 
         fun getType(t: String): TvType {
