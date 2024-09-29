@@ -12,7 +12,7 @@ version = 41
 cloudstream {
     // All of these properties are optional, you can safely remove them
 
-    description = "The ultimate All-in-One home screen to access all of your extensions at one place (You need to select/deselect sections in Ultima's settings to load other extensions on home screen)"
+    description = "The ultimate All-in-One home screen to access all of your providers(internal & external) in one place (You need to select/deselect sections in Ultima's settings to load other extensions on home screen)"
     authors = listOf("RowdyRushya")
 
     /**
