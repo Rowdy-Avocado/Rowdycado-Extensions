@@ -16,7 +16,7 @@ import com.lagradost.cloudstream3.utils.getAndUnpack
 
 class MoflixMediaProvider : MediaProvider() {
     override val name = "Moflix"
-    override val domain = "https://moflix-stream.xyz"
+    override val domain = "https://moflix1.vercel.app"
     override val categories = listOf(Category.MEDIA)
 
     override suspend fun loadContent(
