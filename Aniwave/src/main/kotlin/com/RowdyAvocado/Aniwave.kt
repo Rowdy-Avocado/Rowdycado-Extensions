@@ -351,7 +351,6 @@ class Aniwave : MainAPI() {
                             val datalinkId = it.attr("data-link-id")
                             val serverID = it.attr("data-sv-id")
                             val newSname = serverName(serverID) ?: return@mapNotNull null
-                            if (!newSname.equals("gogo")) return@mapNotNull null
                             Pair(newSname, datalinkId)
                         }
 
