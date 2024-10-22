@@ -11,7 +11,6 @@ import com.lagradost.cloudstream3.LoadResponse.Companion.addDuration
 import com.lagradost.cloudstream3.MainAPI
 import com.lagradost.cloudstream3.MainPageRequest
 import com.lagradost.cloudstream3.SearchResponse
-import com.lagradost.cloudstream3.SeasonData
 import com.lagradost.cloudstream3.ShowStatus
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.TvType
@@ -20,7 +19,8 @@ import com.lagradost.cloudstream3.addEpisodes
 import com.lagradost.cloudstream3.amap
 import com.lagradost.cloudstream3.apmap
 import com.lagradost.cloudstream3.app
-import com.lagradost.cloudstream3.extractors.AnyVidplay
+import com.lagradost.cloudstream3.extractors.Mp4Upload
+import com.lagradost.cloudstream3.extractors.helper.GogoHelper
 import com.lagradost.cloudstream3.fixUrl
 import com.lagradost.cloudstream3.mainPageOf
 import com.lagradost.cloudstream3.newAnimeLoadResponse
@@ -30,9 +30,7 @@ import com.lagradost.cloudstream3.newHomePageResponse
 import com.lagradost.cloudstream3.syncproviders.SyncIdName
 import com.lagradost.cloudstream3.utils.AppUtils
 import com.lagradost.cloudstream3.utils.ExtractorLink
-import com.lagradost.cloudstream3.utils.JsUnpacker
 import com.lagradost.cloudstream3.utils.Qualities
-import com.lagradost.cloudstream3.utils.loadExtractor
 import java.net.URLEncoder
 import kotlinx.coroutines.delay
 import org.jsoup.Jsoup
@@ -49,6 +47,7 @@ class Aniwave : MainAPI() {
     override val supportedSyncNames = setOf(SyncIdName.Anilist, SyncIdName.MyAnimeList)
     override val supportedTypes = setOf(TvType.Anime)
     override val hasQuickSearch = true
+    private val xmlHeader = mapOf("x-requested-with" to "XMLHttpRequest")
 
     companion object {
         var keys: Keys? = null
@@ -60,11 +59,13 @@ class Aniwave : MainAPI() {
     }
 
     private suspend fun getKeys(): Keys {
-        if (keys == null) {
-            keys = app.get("https://rowdy-avocado.github.io/multi-keys/").parsedSafe<Keys>()
-                            ?: throw Exception("Unable to fetch keys")
-        }
-        return keys!!
+        return Keys(listOf(Step(1, "")))
+        // if (keys == null) {
+        //     keys =
+        //             app.get("https://rowdy-avocado.github.io/multi-keys/").parsedSafe<Keys>()
+        //                     ?: throw Exception("Unable to fetch keys")
+        // }
+        // return keys!!
     }
 
     private fun Element.toSearchResponse(): SearchResponse? {
@@ -88,8 +89,8 @@ class Aniwave : MainAPI() {
 
     override val mainPage =
             mainPageOf(
+                    "$mainUrl/ajax/home/widget/updated-all?page=" to "Recently Updated",
                     "$mainUrl/ajax/home/widget/trending?page=" to "Trending",
-                    "$mainUrl/ajax/home/widget/updated-all?page=" to "All",
                     "$mainUrl/ajax/home/widget/updated-sub?page=" to "Recently Updated (SUB)",
                     "$mainUrl/ajax/home/widget/updated-dub?page=" to "Recently Updated (DUB)",
                     "$mainUrl/ajax/home/widget/updated-china?page=" to "Recently Updated (Chinese)",
@@ -110,7 +111,7 @@ class Aniwave : MainAPI() {
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val url = request.data + page
-        val res = app.get(url).parsed<Response>()
+        val res = app.get(url, headers = xmlHeader).parsed<Response>()
         if (!res.status.equals(200)) throw ErrorLoadingException("Could not connect to the server")
         val home = res.getHtml().select("div.item").mapNotNull { it.toSearchResponse() }
         return newHomePageResponse(request.name, home, true)
@@ -132,18 +133,21 @@ class Aniwave : MainAPI() {
         val title =
                 (info.selectFirst(".title") ?: info.selectFirst(".d-title"))?.text()
                         ?: throw ErrorLoadingException("Could not find title")
-        val vrf = AniwaveUtils.vrfEncrypt(getKeys(), id)
-        val episodeListUrl = "$mainUrl/ajax/episode/list/$id?$vrf"
+        // val vrf = AniwaveUtils.vrfEncrypt(getKeys(), id)
+        // val episodeListUrl = "$mainUrl/ajax/episode/list/$id?$vrf"
+        val episodeListUrl = "$mainUrl/ajax/episode/list/$id"
         val body =
-                app.get(episodeListUrl).parsedSafe<Response>()?.getHtml()
+                app.get(episodeListUrl, headers = xmlHeader).parsedSafe<Response>()?.getHtml()
                         ?: throw ErrorLoadingException(
-                                "Could not parse json with Vrf=$vrf id=$id url=\n$episodeListUrl"
+                                // "Could not parse json with Vrf=$vrf id=$id url=\n$episodeListUrl"
+                                "Could not parse json with id=$id url=\n$episodeListUrl"
                         )
 
         val subEpisodes = ArrayList<Episode>()
         val dubEpisodes = ArrayList<Episode>()
-        val softsubeps = ArrayList<Episode>()
-        val uncensored = ArrayList<Episode>()
+        // val softsubeps = ArrayList<Episode>()
+        // val uncensored = ArrayList<Episode>()
+
         val genres =
                 doc.select("div.meta:nth-child(1) > div:contains(Genres:) a").mapNotNull {
                     it.text()
@@ -172,101 +176,113 @@ class Aniwave : MainAPI() {
         val duration = doc.selectFirst(".bmeta > div > div:contains(Duration:) > span")?.text()
 
         body.select(".episodes > ul > li > a").apmap { element ->
-            val ids = element.attr("data-ids").split(",", limit = 3)
-            val dataDub = element.attr("data-dub").toIntOrNull()
+            // val ids = element.attr("data-ids").split(",", limit = 3)
+            // val epTitle = element.selectFirst("span.d-title")?.text()
+            // val isUncen = element.attr("data-slug").contains("uncen")
+            val ids = element.attr("data-ids")
+            val dataSub = element.attr("data-sub").toIntOrNull() ?: 0
+            val dataDub = element.attr("data-dub").toIntOrNull() ?: 0
             val epNum = element.attr("data-num").toIntOrNull()
-            val epTitle = element.selectFirst("span.d-title")?.text()
-            val isUncen = element.attr("data-slug").contains("uncen")
 
-            if (ids.size > 0) {
-                if (isUncen) {
-                    ids.getOrNull(0)?.let { uncen ->
-                        val epdd = "{\"ID\":\"$uncen\",\"type\":\"sub\"}"
-                        uncensored.add(
-                                newEpisode(epdd) {
-                                    this.episode = epNum
-                                    this.name = epTitle
-                                    this.season = -4
-                                }
-                        )
-                    }
-                } else {
-                    if (ids.size == 1 && dataDub == 1) {
-                        ids.getOrNull(0)?.let { dub ->
-                            val epdd = "{\"ID\":\"$dub\",\"type\":\"dub\"}"
-                            dubEpisodes.add(
-                                    newEpisode(epdd) {
-                                        this.episode = epNum
-                                        this.name = epTitle
-                                        this.season = -2
-                                    }
-                            )
-                        }
-                    } else {
-                        ids.getOrNull(0)?.let { sub ->
-                            val epdd = "{\"ID\":\"$sub\",\"type\":\"sub\"}"
-                            subEpisodes.add(
-                                    newEpisode(epdd) {
-                                        this.episode = epNum
-                                        this.name = epTitle
-                                        this.season = -1
-                                    }
-                            )
-                        }
-                    }
-                }
-                if (ids.size > 1) {
-                    if (dataDub == 0 || ids.size > 2) {
-                        ids.getOrNull(1)?.let { softsub ->
-                            val epdd = "{\"ID\":\"$softsub\",\"type\":\"softsub\"}"
-                            softsubeps.add(
-                                    newEpisode(epdd) {
-                                        this.episode = epNum
-                                        this.name = epTitle
-                                        this.season = -3
-                                    }
-                            )
-                        }
-                    } else {
-                        ids.getOrNull(1)?.let { dub ->
-                            val epdd = "{\"ID\":\"$dub\",\"type\":\"dub\"}"
-                            dubEpisodes.add(
-                                    newEpisode(epdd) {
-                                        this.episode = epNum
-                                        this.name = epTitle
-                                        this.season = -2
-                                    }
-                            )
-                        }
-                    }
-
-                    if (ids.size > 2) {
-                        ids.getOrNull(2)?.let { dub ->
-                            val epdd = "{\"ID\":\"$dub\",\"type\":\"dub\"}"
-                            dubEpisodes.add(
-                                    newEpisode(epdd) {
-                                        this.episode = epNum
-                                        this.name = epTitle
-                                        this.season = -2
-                                    }
-                            )
-                        }
-                    }
-                }
+            if (dataSub.equals(1)) {
+                val epdd = "{\"ID\":\"$ids\",\"type\":\"sub\"}"
+                subEpisodes.add(newEpisode(epdd) { this.episode = epNum })
             }
+
+            if (dataDub.equals(1)) {
+                val epdd = "{\"ID\":\"$ids\",\"type\":\"dub\"}"
+                dubEpisodes.add(newEpisode(epdd) { this.episode = epNum })
+            }
+
+            // if (ids.size > 0) {
+            //     if (isUncen) {
+            //         ids.getOrNull(0)?.let { uncen ->
+            //             val epdd = "{\"ID\":\"$uncen\",\"type\":\"sub\"}"
+            //             uncensored.add(
+            //                     newEpisode(epdd) {
+            //                         this.episode = epNum
+            //                         this.name = epTitle
+            //                         this.season = -4
+            //                     }
+            //             )
+            //         }
+            //     } else {
+            //         if (ids.size == 1 && dataDub == 1) {
+            //             ids.getOrNull(0)?.let { dub ->
+            //                 val epdd = "{\"ID\":\"$dub\",\"type\":\"dub\"}"
+            //                 dubEpisodes.add(
+            //                         newEpisode(epdd) {
+            //                             this.episode = epNum
+            //                             this.name = epTitle
+            //                             this.season = -2
+            //                         }
+            //                 )
+            //             }
+            //         } else {
+            //             ids.getOrNull(0)?.let { sub ->
+            //                 val epdd = "{\"ID\":\"$sub\",\"type\":\"sub\"}"
+            //                 subEpisodes.add(
+            //                         newEpisode(epdd) {
+            //                             this.episode = epNum
+            //                             this.name = epTitle
+            //                             this.season = -1
+            //                         }
+            //                 )
+            //             }
+            //         }
+            //     }
+            //     if (ids.size > 1) {
+            //         if (dataDub == 0 || ids.size > 2) {
+            //             ids.getOrNull(1)?.let { softsub ->
+            //                 val epdd = "{\"ID\":\"$softsub\",\"type\":\"softsub\"}"
+            //                 softsubeps.add(
+            //                         newEpisode(epdd) {
+            //                             this.episode = epNum
+            //                             this.name = epTitle
+            //                             this.season = -3
+            //                         }
+            //                 )
+            //             }
+            //         } else {
+            //             ids.getOrNull(1)?.let { dub ->
+            //                 val epdd = "{\"ID\":\"$dub\",\"type\":\"dub\"}"
+            //                 dubEpisodes.add(
+            //                         newEpisode(epdd) {
+            //                             this.episode = epNum
+            //                             this.name = epTitle
+            //                             this.season = -2
+            //                         }
+            //                 )
+            //             }
+            //         }
+
+            //         if (ids.size > 2) {
+            //             ids.getOrNull(2)?.let { dub ->
+            //                 val epdd = "{\"ID\":\"$dub\",\"type\":\"dub\"}"
+            //                 dubEpisodes.add(
+            //                         newEpisode(epdd) {
+            //                             this.episode = epNum
+            //                             this.name = epTitle
+            //                             this.season = -2
+            //                         }
+            //                 )
+            //             }
+            //         }
+            //     }
+            // }
         }
 
         // season -1 HARDSUBBED
         // season -2 Dubbed
         // Season -3 SofSubbed
 
-        val names =
-                listOf(
-                        Pair("Sub", -1),
-                        Pair("Dub", -2),
-                        Pair("S-Sub", -3),
-                        Pair("Uncensored", -4),
-                )
+        // val names =
+        //         listOf(
+        //                 Pair("Sub", -1),
+        //                 Pair("Dub", -2),
+        //                 Pair("S-Sub", -3),
+        //                 Pair("Uncensored", -4),
+        //         )
 
         // Reading info from web page to fetch anilistData
         val titleRomaji =
@@ -281,11 +297,11 @@ class Aniwave : MainAPI() {
         val year = premieredDetails?.get(1)?.toInt() ?: 0
 
         return newAnimeLoadResponse(title, url, TvType.Anime) {
-            addEpisodes(DubStatus.Subbed, dubEpisodes)
+            // addEpisodes(DubStatus.Subbed, softsubeps)
+            // addEpisodes(DubStatus.Subbed, uncensored)
+            // this.seasonNames = names.map { (name, int) -> SeasonData(int, name) }
+            addEpisodes(DubStatus.Dubbed, dubEpisodes)
             addEpisodes(DubStatus.Subbed, subEpisodes)
-            addEpisodes(DubStatus.Subbed, softsubeps)
-            addEpisodes(DubStatus.Subbed, uncensored)
-            this.seasonNames = names.map { (name, int) -> SeasonData(int, name) }
             plot = info.selectFirst(".synopsis > .shorting > .content")?.text()
             this.posterUrl = poster
             rating = ratingElement.attr("data-score").toFloat().times(1000f).toInt()
@@ -308,6 +324,10 @@ class Aniwave : MainAPI() {
                     "40" -> "streamtape"
                     "35" -> "mp4upload"
                     "28" -> "MyCloud"
+                    "0f2" -> "vidplay"
+                    "5c2" -> "vidstreaming"
+                    "224" -> "gogo"
+                    "f64" -> "mp4upload"
                     else -> null
                 }
         return sss
@@ -320,56 +340,110 @@ class Aniwave : MainAPI() {
             callback: (ExtractorLink) -> Unit
     ): Boolean {
         val parseData = AppUtils.parseJson<SubDubInfo>(data)
-        val datavrf = AniwaveUtils.vrfEncrypt(getKeys(), parseData.ID)
-        val one = app.get("$mainUrl/ajax/server/list/${parseData.ID}?$datavrf").parsed<Response>()
+        // val datavrf = AniwaveUtils.vrfEncrypt(getKeys(), parseData.ID)
+        val one =
+                app.get("$mainUrl/ajax/server/list?servers=${parseData.ID}", headers = xmlHeader)
+                        .parsed<Response>()
         val two = one.getHtml()
         val aas =
-                two.select("div.servers .type[data-type=${parseData.type}] li").mapNotNull {
-                    val datalinkId = it.attr("data-link-id")
-                    val serverID = it.attr("data-sv-id").toString()
-                    val newSname = serverName(serverID)
-                    Pair(newSname, datalinkId)
-                }
+                two.select("div.servers .type[data-type=${parseData.type}] li.ep-server-item")
+                        .mapNotNull {
+                            val datalinkId = it.attr("data-link-id")
+                            val serverID = it.attr("data-sv-id")
+                            val newSname = serverName(serverID) ?: return@mapNotNull null
+                            if (!newSname.equals("gogo")) return@mapNotNull null
+                            Pair(newSname, datalinkId)
+                        }
+
         aas.amap { (sName, sId) ->
             try {
-                val vrf = AniwaveUtils.vrfEncrypt(getKeys(), sId)
-                val videncrr = app.get("$mainUrl/ajax/server/$sId?$vrf").parsed<Links>()
-                val encUrl = videncrr.result?.url ?: return@amap
-                val asss = AniwaveUtils.vrfDecrypt(getKeys(), encUrl)
-
-                if (sName.equals("filemoon")) {
-                    val res = app.get(asss)
-                    if (res.code == 200) {
-                        val packedJS =
-                                res.document
-                                        .selectFirst("script:containsData(function(p,a,c,k,e,d))")
-                                        ?.data()
-                                        .toString()
-                        JsUnpacker(packedJS).unpack().let { unPacked ->
-                            Regex("sources:\\[\\{file:\"(.*?)\"")
-                                    .find(unPacked ?: "")
-                                    ?.groupValues
-                                    ?.get(1)
-                                    ?.let { link ->
-                                        callback.invoke(
-                                                ExtractorLink(
-                                                        "Filemoon",
-                                                        "Filemoon",
-                                                        link,
-                                                        "",
-                                                        Qualities.Unknown.value,
-                                                        link.contains(".m3u8")
-                                                )
-                                        )
-                                    }
-                        }
+                val linkRes =
+                        app.get("$mainUrl/ajax/server?get=$sId", headers = xmlHeader)
+                                .parsed<Links>()
+                val link = linkRes.result?.url ?: return@amap
+                val host = AniwaveUtils.getBaseUrl(link)
+                when (sName) {
+                    "vidplay" -> {
+                        val iFramePage = app.get(link, referer = host).document
+                        val jsData =
+                                iFramePage.selectFirst("script:containsData(jwplayer)")
+                                        ?: return@amap
+                        val fileLink =
+                                Regex("""file": `(.*)`""").find(jsData.html())?.groupValues?.get(1)
+                                        ?: return@amap
+                        callback.invoke(
+                                ExtractorLink(
+                                        "Vidplay",
+                                        "Vidplay",
+                                        fileLink,
+                                        "",
+                                        Qualities.Unknown.value,
+                                        fileLink.contains(".m3u8")
+                                )
+                        )
                     }
-                } else if (sName.equals("vidplay")) {
-                    val host = AniwaveUtils.getBaseUrl(asss)
-                    AnyVidplay(host).getUrl(asss, host, subtitleCallback, callback)
-                } else loadExtractor(asss, subtitleCallback, callback)
+                    "vidstreaming" -> {
+                        val iv = "3134003223491201"
+                        val secretKey = "37911490979715163134003223491201"
+                        val secretDecryptKey = "54674138327930866480207815084989"
+                        GogoHelper.extractVidstream(
+                                link,
+                                "Vidstreaming",
+                                callback,
+                                iv,
+                                secretKey,
+                                secretDecryptKey,
+                                isUsingAdaptiveKeys = false,
+                                isUsingAdaptiveData = true
+                        )
+                    }
+                    "gogo" -> {}
+                    "mp4upload" -> AnyMp4Upload(host).getUrl(link, host, subtitleCallback, callback)
+                    else -> {}
+                }
             } catch (e: Exception) {}
         }
+        // aas.amap { (sName, sId) ->
+        //     try {
+        //         val vrf = AniwaveUtils.vrfEncrypt(getKeys(), sId)
+        //         val videncrr = app.get("$mainUrl/ajax/server/$sId?$vrf").parsed<Links>()
+        //         val encUrl = videncrr.result?.url ?: return@amap
+        //         val asss = AniwaveUtils.vrfDecrypt(getKeys(), encUrl)
+
+        //         if (sName.equals("filemoon")) {
+        //             val res = app.get(asss)
+        //             if (res.code == 200) {
+        //                 val packedJS =
+        //                         res.document
+        //
+        // .selectFirst("script:containsData(function(p,a,c,k,e,d))")
+        //                                 ?.data()
+        //                                 .toString()
+        //                 JsUnpacker(packedJS).unpack().let { unPacked ->
+        //                     Regex("sources:\\[\\{file:\"(.*?)\"")
+        //                             .find(unPacked ?: "")
+        //                             ?.groupValues
+        //                             ?.get(1)
+        //                             ?.let { link ->
+        //                                 callback.invoke(
+        //                                         ExtractorLink(
+        //                                                 "Filemoon",
+        //                                                 "Filemoon",
+        //                                                 link,
+        //                                                 "",
+        //                                                 Qualities.Unknown.value,
+        //                                                 link.contains(".m3u8")
+        //                                         )
+        //                                 )
+        //                             }
+        //                 }
+        //             }
+        //         } else if (sName.equals("vidplay")) {
+        //             val host = AniwaveUtils.getBaseUrl(asss)
+        //             AnyVidplay(host).getUrl(asss, host, subtitleCallback, callback)
+        //         } else loadExtractor(asss, subtitleCallback, callback)
+        //     } catch (e: Exception) {}
+        // }
         return true
     }
 
@@ -474,6 +548,10 @@ class Aniwave : MainAPI() {
     data class Step(
             @JsonProperty("sequence") val sequence: Int,
             @JsonProperty("method") val method: String,
-			@JsonProperty("keys") val keys: List<String>? = null 
+            @JsonProperty("keys") val keys: List<String>? = null
     )
+
+    class AnyMp4Upload(domain: String = "") : Mp4Upload() {
+        override var mainUrl = domain
+    }
 }

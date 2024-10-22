@@ -81,7 +81,8 @@ class BottomFragment(private val plugin: AniwavePlugin) : BottomSheetDialogFragm
             val radioBtnLayout = plugin.resources!!.getLayout(radioBtnId)
             val radioBtnView = inflater.inflate(radioBtnLayout, container, false)
             val radioBtn = radioBtnView.findView<RadioButton>("radio_button")
-            radioBtn.text = server.link
+            radioBtn.text = server.link.first
+            radioBtn.isEnabled = server.link.second
             val newId = View.generateViewId()
             radioBtn.id = newId
             radioBtn.background = plugin.resources!!.getDrawable(outlineId, null)
@@ -94,7 +95,8 @@ class BottomFragment(private val plugin: AniwavePlugin) : BottomSheetDialogFragm
                     }
             )
             serverGroup.addView(radioBtnView)
-            if (AniwavePlugin.currentAniwaveServer.equals(server.link)) serverGroup.check(newId)
+            if (AniwavePlugin.currentAniwaveServer.equals(server.link.first))
+                    serverGroup.check(newId)
         }
         return view
     }

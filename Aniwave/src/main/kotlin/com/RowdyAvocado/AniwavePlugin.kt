@@ -11,10 +11,11 @@ import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
 import com.lagradost.cloudstream3.plugins.Plugin
 import com.lagradost.cloudstream3.plugins.PluginManager
 
-enum class ServerList(val link: String) {
-    TO("https://aniwave.to"),
-    LI("https://aniwave.li"),
-    VC("https://aniwave.vc")
+enum class ServerList(val link: Pair<String, Boolean>) {
+    TO("https://aniwave.to" to false),
+    LI("https://aniwave.li" to false),
+    VC("https://aniwave.vc" to false),
+    LV("https://aniwave.lv" to true)
 }
 
 @CloudstreamPlugin
@@ -57,7 +58,7 @@ class AniwavePlugin : Plugin() {
         }
 
         var currentAniwaveServer: String
-            get() = getKey("ANIWAVE_CURRENT_SERVER") ?: ServerList.TO.link
+            get() = getKey("ANIWAVE_CURRENT_SERVER") ?: ServerList.TO.link.first
             set(value) {
                 setKey("ANIWAVE_CURRENT_SERVER", value)
             }
