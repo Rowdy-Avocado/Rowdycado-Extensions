@@ -20,6 +20,8 @@ import com.lagradost.cloudstream3.amap
 import com.lagradost.cloudstream3.apmap
 import com.lagradost.cloudstream3.app
 import com.lagradost.cloudstream3.extractors.Mp4Upload
+import com.lagradost.cloudstream3.extractors.StreamWishExtractor
+import com.lagradost.cloudstream3.extractors.VidhideExtractor
 import com.lagradost.cloudstream3.extractors.helper.GogoHelper
 import com.lagradost.cloudstream3.fixUrl
 import com.lagradost.cloudstream3.mainPageOf
@@ -29,15 +31,18 @@ import com.lagradost.cloudstream3.newEpisode
 import com.lagradost.cloudstream3.newHomePageResponse
 import com.lagradost.cloudstream3.syncproviders.SyncIdName
 import com.lagradost.cloudstream3.utils.AppUtils
+import com.lagradost.cloudstream3.utils.ExtractorApi
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.Qualities
+import com.lagradost.cloudstream3.utils.getQualityFromName
 import java.net.URLEncoder
+import kotlin.io.encoding.Base64
 import kotlinx.coroutines.delay
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-@OptIn(kotlin.ExperimentalStdlibApi::class)
+@OptIn(kotlin.io.encoding.ExperimentalEncodingApi::class)
 class Aniwave : MainAPI() {
     override var mainUrl = AniwavePlugin.currentAniwaveServer
     override var name = "Aniwave/9Anime"
@@ -319,15 +324,16 @@ class Aniwave : MainAPI() {
     private fun serverName(serverID: String?): String? {
         val sss =
                 when (serverID) {
-                    "41" -> "vidplay"
-                    "44" -> "filemoon"
-                    "40" -> "streamtape"
-                    "35" -> "mp4upload"
-                    "28" -> "MyCloud"
                     "0f2" -> "vidplay"
+                    "089" -> "mycloud"
                     "5c2" -> "vidstreaming"
                     "224" -> "gogo"
+                    "5c3" -> "streamwish"
                     "f64" -> "mp4upload"
+                    "731" -> "doodstream"
+                    "478" -> "vidhide"
+                    "c4f" -> "filelions"
+                    "323" -> "zoro"
                     else -> null
                 }
         return sss
@@ -381,6 +387,20 @@ class Aniwave : MainAPI() {
                                 )
                         )
                     }
+                    "mycloud" -> {
+                        val encIFrameUrl = app.get(link).url.split("#").getOrNull(1) ?: return@amap
+                        val fileLink = Base64.UrlSafe.decode(encIFrameUrl).toString(Charsets.UTF_8)
+                        callback.invoke(
+                                ExtractorLink(
+                                        "Mycloud",
+                                        "Mycloud",
+                                        fileLink,
+                                        "",
+                                        Qualities.Unknown.value,
+                                        fileLink.contains(".m3u8")
+                                )
+                        )
+                    }
                     "vidstreaming" -> {
                         val iv = "3134003223491201"
                         val secretKey = "37911490979715163134003223491201"
@@ -397,52 +417,46 @@ class Aniwave : MainAPI() {
                         )
                     }
                     "gogo" -> {}
+                    "streamwish" -> {
+                        // AnyStreamWish(host).getUrl(link, host, subtitleCallback, callback)
+                    }
                     "mp4upload" -> AnyMp4Upload(host).getUrl(link, host, subtitleCallback, callback)
+                    "doodstream" ->
+                            AnyDoodStream(host).getUrl(link, host, subtitleCallback, callback)
+                    "vidhide" -> AnyVidhide(host).getUrl(link, host, subtitleCallback, callback)
+                    "filelions" -> {
+                        // AnyFilelions(host).getUrl(link, host, subtitleCallback, callback)
+                    }
+                    "zoro" -> {
+                        val iFramePage = app.get(link, referer = host).document
+                        val jsData =
+                                iFramePage
+                                        .selectFirst("script:containsData(JsonData)")
+                                        ?.html()
+                                        ?.split("=")
+                                        ?.getOrNull(1)
+                                        ?: return@amap
+                        val jsonData = AppUtils.parseJson<ZoroJson>(jsData)
+                        jsonData.subtitles.amap { sub ->
+                            sub.lang?.let { subtitleCallback.invoke(SubtitleFile(it, sub.file)) }
+                        }
+                        jsonData.sources.amap { source ->
+                            callback.invoke(
+                                    ExtractorLink(
+                                            "Zoro",
+                                            "Zoro",
+                                            source.file,
+                                            "",
+                                            Qualities.Unknown.value,
+                                            source.file.contains(".m3u8")
+                                    )
+                            )
+                        }
+                    }
                     else -> {}
                 }
             } catch (e: Exception) {}
         }
-        // aas.amap { (sName, sId) ->
-        //     try {
-        //         val vrf = AniwaveUtils.vrfEncrypt(getKeys(), sId)
-        //         val videncrr = app.get("$mainUrl/ajax/server/$sId?$vrf").parsed<Links>()
-        //         val encUrl = videncrr.result?.url ?: return@amap
-        //         val asss = AniwaveUtils.vrfDecrypt(getKeys(), encUrl)
-
-        //         if (sName.equals("filemoon")) {
-        //             val res = app.get(asss)
-        //             if (res.code == 200) {
-        //                 val packedJS =
-        //                         res.document
-        //
-        // .selectFirst("script:containsData(function(p,a,c,k,e,d))")
-        //                                 ?.data()
-        //                                 .toString()
-        //                 JsUnpacker(packedJS).unpack().let { unPacked ->
-        //                     Regex("sources:\\[\\{file:\"(.*?)\"")
-        //                             .find(unPacked ?: "")
-        //                             ?.groupValues
-        //                             ?.get(1)
-        //                             ?.let { link ->
-        //                                 callback.invoke(
-        //                                         ExtractorLink(
-        //                                                 "Filemoon",
-        //                                                 "Filemoon",
-        //                                                 link,
-        //                                                 "",
-        //                                                 Qualities.Unknown.value,
-        //                                                 link.contains(".m3u8")
-        //                                         )
-        //                                 )
-        //                             }
-        //                 }
-        //             }
-        //         } else if (sName.equals("vidplay")) {
-        //             val host = AniwaveUtils.getBaseUrl(asss)
-        //             AnyVidplay(host).getUrl(asss, host, subtitleCallback, callback)
-        //         } else loadExtractor(asss, subtitleCallback, callback)
-        //     } catch (e: Exception) {}
-        // }
         return true
     }
 
@@ -550,7 +564,74 @@ class Aniwave : MainAPI() {
             @JsonProperty("keys") val keys: List<String>? = null
     )
 
+    data class ZoroJson(
+            @JsonProperty("tracks") val subtitles: List<Subtitle>,
+            @JsonProperty("sources") val sources: List<Source>
+    )
+
+    data class Subtitle(
+            @JsonProperty("file") val file: String,
+            @JsonProperty("label") val lang: String? = null,
+            @JsonProperty("kind") val kind: String,
+    )
+
+    data class Source(
+            @JsonProperty("file") val file: String,
+            @JsonProperty("type") val type: String
+    )
+
     class AnyMp4Upload(domain: String = "") : Mp4Upload() {
         override var mainUrl = domain
+        override var requiresReferer = false
+    }
+
+    class AnyStreamWish(domain: String = "") : StreamWishExtractor() {
+        override var name = "StreamWish"
+        override var mainUrl = domain
+        override val requiresReferer = false
+    }
+
+    class AnyVidhide(domain: String = "") : VidhideExtractor() {
+        override var name = "Vidhide"
+        override var mainUrl = domain
+        override val requiresReferer = false
+    }
+
+    class AnyFilelions(domain: String = "") : VidhideExtractor() {
+        override var name = "Filelions"
+        override var mainUrl = domain
+        override val requiresReferer = false
+    }
+
+    open class AnyDoodStream(domain: String) : ExtractorApi() {
+        override var name = "DoodStream"
+        override var mainUrl = domain
+        override val requiresReferer = false
+
+        override fun getExtractorUrl(id: String): String {
+            return "$mainUrl/d/$id"
+        }
+
+        override suspend fun getUrl(url: String, referer: String?): List<ExtractorLink>? {
+            val res = app.get(url).text
+            val md5 = mainUrl + (Regex("/pass_md5/[^']*").find(res)?.value ?: return null)
+            val res2 = app.get(md5, referer = url).text
+            val trueUrl = res2 + "zUEJeL3mUN?token=" + md5.substringAfterLast("/")
+            val quality =
+                    Regex("\\d{3,4}p")
+                            .find(res.substringAfter("<title>").substringBefore("</title>"))
+                            ?.groupValues
+                            ?.get(0)
+            return listOf(
+                    ExtractorLink(
+                            this.name,
+                            this.name,
+                            trueUrl,
+                            mainUrl,
+                            getQualityFromName(quality),
+                            false
+                    )
+            )
+        }
     }
 }

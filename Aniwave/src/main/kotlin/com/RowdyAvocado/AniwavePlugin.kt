@@ -15,7 +15,8 @@ enum class ServerList(val link: Pair<String, Boolean>) {
     TO("https://aniwave.to" to false),
     LI("https://aniwave.li" to false),
     VC("https://aniwave.vc" to false),
-    LV("https://aniwave.lv" to true)
+    LV("https://aniwave.lv" to true),
+    BEST("https://aniwave.best" to true)
 }
 
 @CloudstreamPlugin
@@ -32,6 +33,14 @@ class AniwavePlugin : Plugin() {
                                     ?: return@openSettings
                     BottomFragment(this).show(manager, "")
                 }
+
+        // if disabled server is selected by default, this will switch it to BEST server.
+        ServerList.values().find { it.link.first.equals(currentAniwaveServer) }?.let {
+            if (!it.link.second) {
+                currentAniwaveServer = ServerList.BEST.link.first
+                reload(context)
+            }
+        }
     }
 
     fun reload(context: Context?) {
@@ -58,7 +67,7 @@ class AniwavePlugin : Plugin() {
         }
 
         var currentAniwaveServer: String
-            get() = getKey("ANIWAVE_CURRENT_SERVER") ?: ServerList.TO.link.first
+            get() = getKey("ANIWAVE_CURRENT_SERVER") ?: ServerList.BEST.link.first
             set(value) {
                 setKey("ANIWAVE_CURRENT_SERVER", value)
             }
