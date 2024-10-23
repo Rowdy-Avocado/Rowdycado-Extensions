@@ -21,7 +21,7 @@ cloudstream {
         "OVA",
     )
 
-    iconUrl = "https://www.google.com/s2/favicons?domain=aniwave.to&sz=%size%"
+    iconUrl = "https://aniwave.best/aniwave/images/favicon.png"
     
     requiresResources = true
 }

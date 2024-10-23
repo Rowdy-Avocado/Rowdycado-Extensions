@@ -17,11 +17,14 @@ import com.lagradost.cloudstream3.extractors.StreamWishExtractor
 import com.lagradost.cloudstream3.extractors.VidhideExtractor
 import com.lagradost.cloudstream3.extractors.Vidplay
 import com.lagradost.cloudstream3.extractors.helper.GogoHelper
+import com.lagradost.cloudstream3.utils.AppUtils
+import com.lagradost.cloudstream3.utils.ExtractorApi
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.loadExtractor
 import java.net.URI
 import java.net.URL
+import kotlin.io.encoding.Base64
 
 abstract class MediaProvider {
     abstract val name: String
@@ -116,6 +119,8 @@ object UltimaMediaProvidersUtils {
         Gogo,
         MDrive,
         Megacloud,
+        Filelions,
+        Zoro,
         Custom,
         NONE
     }
@@ -255,6 +260,12 @@ object UltimaMediaProvidersUtils {
                 ServerName.MDrive ->
                         AnyMDrive(providerName, dubStatus, domain)
                                 .getUrl(url, domain, subtitleCallback, callback)
+                ServerName.Filelions ->
+                        AnyFilelions(providerName, dubStatus, domain)
+                                .getUrl(url, domain, subtitleCallback, callback)
+                ServerName.Zoro ->
+                        ZoroExtractor(providerName, dubStatus, domain)
+                                .getUrl(url, domain, subtitleCallback, callback)
                 ServerName.Custom -> {
                     callback.invoke(
                             ExtractorLink(
@@ -286,6 +297,7 @@ class AnyFileMoon(provider: String?, dubType: String?, domain: String = "") : Fi
     override val requiresReferer = false
 }
 
+@OptIn(kotlin.io.encoding.ExperimentalEncodingApi::class)
 class AnyMyCloud(provider: String?, dubType: String?, domain: String = "") : Vidplay() {
     override val name =
             (if (provider != null) "$provider: " else "") +
@@ -293,6 +305,26 @@ class AnyMyCloud(provider: String?, dubType: String?, domain: String = "") : Vid
                     (if (dubType != null) ": $dubType" else "")
     override val mainUrl = domain
     override val requiresReferer = false
+
+    override suspend fun getUrl(
+            url: String,
+            referer: String?,
+            subtitleCallback: (SubtitleFile) -> Unit,
+            callback: (ExtractorLink) -> Unit
+    ) {
+        val encIFrameUrl = app.get(url).url.split("#").getOrNull(1) ?: return
+        val fileLink = Base64.UrlSafe.decode(encIFrameUrl).toString(Charsets.UTF_8)
+        callback.invoke(
+                ExtractorLink(
+                        name,
+                        name,
+                        fileLink,
+                        "",
+                        Qualities.Unknown.value,
+                        fileLink.contains(".m3u8")
+                )
+        )
+    }
 }
 
 class AnyVidplay(provider: String?, dubType: String?, domain: String = "") : Vidplay() {
@@ -302,6 +334,27 @@ class AnyVidplay(provider: String?, dubType: String?, domain: String = "") : Vid
                     (if (dubType != null) ": $dubType" else "")
     override val mainUrl = domain
     override val requiresReferer = false
+
+    override suspend fun getUrl(
+            url: String,
+            referer: String?,
+            subtitleCallback: (SubtitleFile) -> Unit,
+            callback: (ExtractorLink) -> Unit
+    ) {
+        val iFramePage = app.get(url, referer = referer).document
+        val jsData = iFramePage.selectFirst("script:containsData(jwplayer)") ?: return
+        val fileLink = Regex("""file": `(.*)`""").find(jsData.html())?.groupValues?.get(1) ?: return
+        callback.invoke(
+                ExtractorLink(
+                        name,
+                        name,
+                        fileLink,
+                        "",
+                        Qualities.Unknown.value,
+                        fileLink.contains(".m3u8")
+                )
+        )
+    }
 }
 
 class AnyMp4Upload(provider: String?, dubType: String?, domain: String = "") : Mp4Upload() {
@@ -428,6 +481,72 @@ class AnyMegacloud(provider: String?, dubType: String?, domain: String = "") : R
                         .filter { it.isNotEmpty() }
 
         return indexPairs
+    }
+}
+
+class AnyFilelions(provider: String?, dubType: String?, domain: String = "") : VidhideExtractor() {
+    override var name =
+            (if (provider != null) "$provider: " else "") +
+                    "Filelions" +
+                    (if (dubType != null) ": $dubType" else "")
+    override var mainUrl = domain
+    override val requiresReferer = false
+}
+
+class ZoroExtractor(provider: String?, dubType: String?, domain: String = "") : ExtractorApi() {
+    override var name =
+            (if (provider != null) "$provider: " else "") +
+                    "Zoro" +
+                    (if (dubType != null) ": $dubType" else "")
+    override var mainUrl = domain
+    override val requiresReferer = false
+
+    data class ZoroJson(
+            @JsonProperty("tracks") val subtitles: List<Subtitle>,
+            @JsonProperty("sources") val sources: List<Source>
+    ) {
+        data class Subtitle(
+                @JsonProperty("file") val file: String,
+                @JsonProperty("label") val lang: String? = null,
+                @JsonProperty("kind") val kind: String,
+        )
+
+        data class Source(
+                @JsonProperty("file") val file: String,
+                @JsonProperty("type") val type: String
+        )
+    }
+
+    override suspend fun getUrl(
+            url: String,
+            referer: String?,
+            subtitleCallback: (SubtitleFile) -> Unit,
+            callback: (ExtractorLink) -> Unit
+    ) {
+        val iFramePage = app.get(url, referer = referer).document
+        val jsData =
+                iFramePage
+                        .selectFirst("script:containsData(JsonData)")
+                        ?.html()
+                        ?.split("=")
+                        ?.getOrNull(1)
+                        ?: return
+        val jsonData = AppUtils.parseJson<ZoroJson>(jsData)
+        jsonData.subtitles.amap { sub ->
+            sub.lang?.let { subtitleCallback.invoke(SubtitleFile(it, sub.file)) }
+        }
+        jsonData.sources.amap { source ->
+            callback.invoke(
+                    ExtractorLink(
+                            name,
+                            name,
+                            source.file,
+                            "",
+                            Qualities.Unknown.value,
+                            source.file.contains(".m3u8")
+                    )
+            )
+        }
     }
 }
 // #endregion - Custom Extractors
