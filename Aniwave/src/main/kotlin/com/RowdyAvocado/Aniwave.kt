@@ -324,16 +324,16 @@ class Aniwave : MainAPI() {
     private fun serverName(serverID: String?): String? {
         val sss =
                 when (serverID) {
-                    "0f2" -> "vidplay"
-                    "089" -> "mycloud"
-                    "5c2" -> "vidstreaming"
-                    "224" -> "gogo"
-                    "5c3" -> "streamwish"
-                    "f64" -> "mp4upload"
-                    "731" -> "doodstream"
-                    "478" -> "vidhide"
-                    "c4f" -> "filelions"
-                    "323" -> "zoro"
+                    "0f2" -> "vidplay" // working
+                    "089" -> "mycloud" // working
+                    "5c2" -> "vidstreaming" // not working
+                    "224" -> "gogo" // not working
+                    "5c3" -> "streamwish" // working
+                    "f64" -> "mp4upload" // working
+                    "731" -> "doodstream" // working
+                    "478" -> "vidhide" // working
+                    "c4f" -> "filelions" // working
+                    "323" -> "zoro" // working
                     else -> null
                 }
         return sss
@@ -417,16 +417,13 @@ class Aniwave : MainAPI() {
                         )
                     }
                     "gogo" -> {}
-                    "streamwish" -> {
-                        // AnyStreamWish(host).getUrl(link, host, subtitleCallback, callback)
-                    }
+                    "streamwish" ->
+                            AnyStreamWish(host).getUrl(link, null, subtitleCallback, callback)
                     "mp4upload" -> AnyMp4Upload(host).getUrl(link, host, subtitleCallback, callback)
                     "doodstream" ->
                             AnyDoodStream(host).getUrl(link, host, subtitleCallback, callback)
                     "vidhide" -> AnyVidhide(host).getUrl(link, host, subtitleCallback, callback)
-                    "filelions" -> {
-                        // AnyFilelions(host).getUrl(link, host, subtitleCallback, callback)
-                    }
+                    "filelions" -> AnyFilelions(host).getUrl(link, host, subtitleCallback, callback)
                     "zoro" -> {
                         val iFramePage = app.get(link, referer = host).document
                         val jsData =
@@ -586,9 +583,7 @@ class Aniwave : MainAPI() {
     }
 
     class AnyStreamWish(domain: String = "") : StreamWishExtractor() {
-        override var name = "StreamWish"
         override var mainUrl = domain
-        override val requiresReferer = false
     }
 
     class AnyVidhide(domain: String = "") : VidhideExtractor() {
