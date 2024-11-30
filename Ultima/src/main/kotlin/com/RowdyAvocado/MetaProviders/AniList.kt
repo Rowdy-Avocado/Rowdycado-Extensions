@@ -135,7 +135,6 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
                         .data
                         .media
                         ?: throw Exception("Unable to fetch media details")
-        Log.d("rowdy", "$data")
         val episodes =
                 (1..data.totalEpisodes()).map { i ->
                     val linkData =
