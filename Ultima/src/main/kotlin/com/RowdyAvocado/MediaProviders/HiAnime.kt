@@ -27,7 +27,7 @@ class HiAnimeMediaProvider : MediaProvider() {
             callback: (ExtractorLink) -> Unit
     ) {
         data.year ?: return
-        val filterUrl = "$url/search?keyword=${data.title}&sy=${data.year}"
+        val filterUrl = "$url/search?keyword=${fixName(data.title)}&sy=${data.year}"
         val filterRes = app.get(filterUrl).document
         val result = filterRes.selectFirst("div.film-poster > a")?.attr("href") ?: return
         val seasonId = result.substringAfterLast("-")
@@ -89,4 +89,10 @@ class HiAnimeMediaProvider : MediaProvider() {
     )
     // #endregion - Data classes
 
+    private fun fixName(name: String?):String? {
+        return when(name) {
+            "DAN DA DAN" -> "Dandadan"
+            else -> name
+        }
+    }
 }

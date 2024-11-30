@@ -130,11 +130,12 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
         val id = url.removeSuffix("/").substringAfterLast("/")
         val data =
                 anilistAPICall(
-                                "query (\$id: Int = $id) {  Media (id: \$id, type: ANIME) { id title { romaji english } startDate { year } genres description averageScore bannerImage coverImage { extraLarge large medium } bannerImage episodes nextAiringEpisode { episode } recommendations { edges { node { id mediaRecommendation { id title { romaji english } coverImage { extraLarge large medium } } } } } } }"
+                                "query (\$id: Int = $id) {  Media (id: \$id, type: ANIME) { id title { romaji english } startDate { year } genres description averageScore bannerImage coverImage { extraLarge large medium } bannerImage episodes nextAiringEpisode { episode } airingSchedule { nodes { episode } } recommendations { edges { node { id mediaRecommendation { id title { romaji english } coverImage { extraLarge large medium } } } } } } }"
                         )
                         .data
                         .media
                         ?: throw Exception("Unable to fetch media details")
+        Log.d("rowdy", "$data")
         val episodes =
                 (1..data.totalEpisodes()).map { i ->
                     val linkData =
@@ -207,13 +208,19 @@ class AniList(val plugin: UltimaPlugin) : MainAPI() {
                 @JsonProperty("coverImage") val coverImage: CoverImage,
                 @JsonProperty("bannerImage") val bannerImage: String?,
                 @JsonProperty("nextAiringEpisode") val nextAiringEpisode: SeasonNextAiringEpisode?,
+                @JsonProperty("airingSchedule") val airingSchedule: AiringScheduleNodes?,
                 @JsonProperty("recommendations") val recommendations: RecommendationConnection?,
         ) {
             data class StartDate(@JsonProperty("year") val year: Int)
 
+            data class AiringScheduleNodes(
+                    @JsonProperty("nodes") val nodes: List<SeasonNextAiringEpisode>?
+            )
+
             fun totalEpisodes(): Int {
                 return nextAiringEpisode?.episode?.minus(1)
-                        ?: episodes ?: throw Exception("Unable to calculate total episodes")
+                        ?: episodes ?: airingSchedule?.nodes?.getOrNull(0)?.episode
+                                ?: throw Exception("Unable to calculate total episodes")
             }
 
             fun getTitle(): String {
