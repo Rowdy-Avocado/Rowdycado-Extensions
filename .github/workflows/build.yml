@@ -68,7 +68,7 @@ jobs:
           MultiMovies_API: ${{ secrets.MultiMovies_API }}
           MovieDrive_API: ${{ secrets.MovieDrive_API }}
           AsianDrama_API: ${{ secrets.AsianDrama_API }}
-          HiAnime: ${{ secrets.HiAnime }}
+          HIANIMEAPI: ${{ secrets.HIANIMEAPI }}
         run: |
           cd $GITHUB_WORKSPACE/src
           echo TMDB_API=$TMDB_API >> local.properties
@@ -94,7 +94,7 @@ jobs:
           echo MultiMovies_API=$MultiMovies_API >> local.properties
           echo MovieDrive_API=$MovieDrive_API >> local.properties
           echo AsianDrama_API=$AsianDrama_API >> local.properties
-          echo HiAnime=$HiAnime >> local.properties
+          echo HIANIMEAPI=$HIANIMEAPI >> local.properties
 
       - name: Build Plugins
         run: |
