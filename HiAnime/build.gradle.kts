@@ -1,5 +1,15 @@
 // use an integer for version numbers
-version = 5
+import org.jetbrains.kotlin.konan.properties.Properties
+
+version = 6
+
+android {
+    defaultConfig {
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "HiAnime", "\"${properties.getProperty("HiAnime")}\"")
+    }
+}
 
 
 cloudstream {
