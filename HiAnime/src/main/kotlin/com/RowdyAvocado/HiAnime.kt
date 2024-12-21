@@ -243,7 +243,7 @@ class HiAnime : MainAPI() {
             val serverlist = listOf("hd-1", "hd-2")
             for (server in serverlist )
             {
-                val api="${BuildConfig.HiAnime}/api/v2/hianime/episode/sources?animeEpisodeId=$animeEpisodeId?ep=$epId$&server=$server&category=$dubType"
+                val api="${BuildConfig.HIANIMEAPI}/api/v2/hianime/episode/sources?animeEpisodeId=$animeEpisodeId?ep=$epId$&server=$server&category=$dubType"
                 app.get(api).parsedSafe<Hianime>()?.data?.let { data ->
                     val m3u8Urls = data.sources.map { it.url }
                     val m3u8 = m3u8Urls.firstOrNull()

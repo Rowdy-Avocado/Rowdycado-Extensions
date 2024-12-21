@@ -1,13 +1,13 @@
 // use an integer for version numbers
 import org.jetbrains.kotlin.konan.properties.Properties
 
-version = 6
+version = 7
 
 android {
     defaultConfig {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "HiAnime", "\"${properties.getProperty("HiAnime")}\"")
+        buildConfigField("String", "HIANIMEAPI", "\"${properties.getProperty("HIANIMEAPI")}\"")
     }
 }
 
