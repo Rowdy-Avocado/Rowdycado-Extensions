@@ -2,6 +2,7 @@ package com.RowdyAvocado
 
 import com.RowdyAvocado.RabbitStream.Companion.extractRabbitStream
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lagradost.api.Log
 import com.lagradost.cloudstream3.Actor
 import com.lagradost.cloudstream3.ActorData
 import com.lagradost.cloudstream3.ActorRole
@@ -32,6 +33,8 @@ import com.lagradost.cloudstream3.toRatingInt
 import com.lagradost.cloudstream3.utils.AppUtils.tryParseJson
 import com.lagradost.cloudstream3.utils.Coroutines.ioSafe
 import com.lagradost.cloudstream3.utils.ExtractorLink
+import com.lagradost.cloudstream3.utils.INFER_TYPE
+import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.loadExtractor
 import com.lagradost.nicehttp.Requests.Companion.await
 import java.net.URI
@@ -232,8 +235,47 @@ class HiAnime : MainAPI() {
         // val extractorData = "https://ws1.rapid-cloud.ru/socket.io/?EIO=4&transport=polling"
 
         // Prevent duplicates
-        servers.distinct().apmap {
+        servers.distinct().apmap { it ->
             val link = "$mainUrl/ajax/v2/episode/sources?id=$it"
+
+            //Workaround
+            val animeEpisodeId=data.substringAfterLast("/").substringBeforeLast("-")
+            val serverlist = listOf("hd-1", "hd-2")
+            for (server in serverlist )
+            {
+                val api="${BuildConfig.HiAnime}/api/v2/hianime/episode/sources?animeEpisodeId=$animeEpisodeId?ep=$epId$&server=$server&category=$dubType"
+                app.get(api).parsedSafe<Hianime>()?.data?.let { data ->
+                    val m3u8Urls = data.sources.map { it.url }
+                    val m3u8 = m3u8Urls.firstOrNull()
+                    if (m3u8Urls.isNotEmpty()) {
+                        callback.invoke(
+                            ExtractorLink(
+                                "HiAnime ${server.uppercase()} ${dubType.uppercase()}",
+                                "HiAnime ${server.uppercase()} ${dubType.uppercase()}",
+                                m3u8 ?:"",
+                                "",
+                                Qualities.P1080.value,
+                                INFER_TYPE
+                            )
+                        )
+                    } else {
+                        Log.d("Error:","Not Found")
+                    }
+
+                    data.tracks.map { track ->
+                        val vtt = track.file
+                        val lang=track.label
+                        subtitleCallback.invoke(
+                            SubtitleFile(
+                                lang?:"",
+                                vtt
+                            )
+                        )
+                    }
+                }
+            }
+            //
+
             val extractorLink = app.get(link).parsed<RapidCloudResponse>().link
             val hasLoadedExtractorLink =
                     loadExtractor(
@@ -311,4 +353,46 @@ class HiAnime : MainAPI() {
 
     private data class RapidCloudResponse(@JsonProperty("link") val link: String)
     // #endregion - Data classes
+
+
+
+    //Parser
+
+    data class Hianime(
+        val success: Boolean,
+        val data: HianimeData,
+    )
+
+    data class HianimeData(
+        val tracks: List<HianimeTrack>,
+        val intro: Intro,
+        val outro: Outro,
+        val sources: List<HianimeSource>,
+        @JsonProperty("anilistID")
+        val anilistId: Long,
+        @JsonProperty("malID")
+        val malId: Long,
+    )
+
+    data class HianimeTrack(
+        val file: String,
+        val label: String?,
+        val kind: String,
+        val default: Boolean?,
+    )
+
+    data class Intro(
+        val start: Long,
+        val end: Long,
+    )
+
+    data class Outro(
+        val start: Long,
+        val end: Long,
+    )
+
+    data class HianimeSource(
+        val url: String,
+        val type: String,
+    )
 }
