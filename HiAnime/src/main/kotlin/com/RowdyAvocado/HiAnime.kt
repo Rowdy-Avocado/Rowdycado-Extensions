@@ -33,8 +33,7 @@ import com.lagradost.cloudstream3.toRatingInt
 import com.lagradost.cloudstream3.utils.AppUtils.tryParseJson
 import com.lagradost.cloudstream3.utils.Coroutines.ioSafe
 import com.lagradost.cloudstream3.utils.ExtractorLink
-import com.lagradost.cloudstream3.utils.INFER_TYPE
-import com.lagradost.cloudstream3.utils.Qualities
+import com.lagradost.cloudstream3.utils.M3u8Helper
 import com.lagradost.cloudstream3.utils.loadExtractor
 import com.lagradost.nicehttp.Requests.Companion.await
 import java.net.URI
@@ -248,16 +247,11 @@ class HiAnime : MainAPI() {
                     val m3u8Urls = data.sources.map { it.url }
                     val m3u8 = m3u8Urls.firstOrNull()
                     if (m3u8Urls.isNotEmpty()) {
-                        callback.invoke(
-                            ExtractorLink(
-                                "HiAnime ${server.uppercase()} ${dubType.uppercase()}",
-                                "HiAnime ${server.uppercase()} ${dubType.uppercase()}",
-                                m3u8 ?:"",
-                                "",
-                                Qualities.P1080.value,
-                                INFER_TYPE
-                            )
-                        )
+                        M3u8Helper.generateM3u8(
+                            "HiAnime ${server.uppercase()} ${dubType.uppercase()}",
+                            m3u8 ?:"",
+                            ""
+                        ).forEach(callback)
                     } else {
                         Log.d("Error:","Not Found")
                     }

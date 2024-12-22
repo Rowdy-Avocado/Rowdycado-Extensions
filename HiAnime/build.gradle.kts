@@ -1,7 +1,7 @@
 // use an integer for version numbers
 import org.jetbrains.kotlin.konan.properties.Properties
 
-version = 7
+version = 8
 
 android {
     defaultConfig {
@@ -17,7 +17,7 @@ cloudstream {
     // All of these properties are optional, you can safely remove them
 
     //description = "Webview is used to load links, reload if necessary"
-    authors = listOf("Stormunblessed, KillerDogeEmpire")
+    authors = listOf("Stormunblessed, KillerDogeEmpire,RowdyRushya,Phisher98")
 
     /**
      * Status int as the following:
