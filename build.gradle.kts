@@ -86,7 +86,7 @@ subprojects {
         implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
         implementation("io.karn:khttp-android:0.1.2")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
-        implementation("com.faendir.rhino:rhino-android:1.7.15")
+        implementation("com.faendir.rhino:rhino-android:1.6.0")
     }
 }
 
