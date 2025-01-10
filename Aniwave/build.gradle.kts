@@ -33,8 +33,10 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
     implementation("androidx.preference:preference:1.2.1")
 }
+
 android {
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }

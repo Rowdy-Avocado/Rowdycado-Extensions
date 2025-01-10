@@ -7,6 +7,10 @@ import org.jetbrains.kotlin.konan.properties.Properties
 version = 10
 
 android {
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
@@ -43,10 +47,10 @@ cloudstream {
      * */
     status = 1 // will be 3 if unspecified
     tvTypes = listOf(
-            "AsianDrama",
-            "TvSeries",
-            "Anime",
-            "Movie",
+        "AsianDrama",
+        "TvSeries",
+        "Anime",
+        "Movie",
     )
 
     iconUrl = "https://www.google.com/s2/favicons?domain=uncutmaza.cc&sz=%size%"
