@@ -1,13 +1,13 @@
-package com.KillerDogeEmpire
+package com.RowdyAvocado
 
 import android.util.Log
-import com.KillerDogeEmpire.CodeExtractor.invokeAnitaku
-import com.KillerDogeEmpire.CodeExtractor.invokeBollyflix
-import com.KillerDogeEmpire.CodeExtractor.invokeMoviesmod
-import com.KillerDogeEmpire.CodeExtractor.invokeVegamovies
-import com.KillerDogeEmpire.CodeExtractor.invokeMoviesdrive
-import com.KillerDogeEmpire.CodeExtractor.invokeTopMovies
-import com.KillerDogeEmpire.CodeExtractor.invokeUhdmovies
+import com.RowdyAvocado.CodeExtractor.invokeAnitaku
+import com.RowdyAvocado.CodeExtractor.invokeBollyflix
+import com.RowdyAvocado.CodeExtractor.invokeMoviesmod
+import com.RowdyAvocado.CodeExtractor.invokeVegamovies
+import com.RowdyAvocado.CodeExtractor.invokeMoviesdrive
+import com.RowdyAvocado.CodeExtractor.invokeTopMovies
+import com.RowdyAvocado.CodeExtractor.invokeUhdmovies
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.argamap
 import com.lagradost.cloudstream3.utils.AppUtils

@@ -1,4 +1,4 @@
-package com.KillerDogeEmpire
+package com.RowdyAvocado
 
 import android.annotation.SuppressLint
 import android.util.Log

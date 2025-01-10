@@ -1,4 +1,4 @@
-package com.KillerDogeEmpire
+package com.RowdyAvocado
 
 //import android.util.Log
 import com.lagradost.cloudstream3.extractors.Filesim

@@ -1,5 +1,5 @@
 
-package com.KillerDogeEmpire
+package com.RowdyAvocado
 
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.app

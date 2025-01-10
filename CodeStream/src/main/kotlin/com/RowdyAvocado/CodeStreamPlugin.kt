@@ -1,4 +1,4 @@
-package com.KillerDogeEmpire
+package com.RowdyAvocado
 
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
 import com.lagradost.cloudstream3.plugins.Plugin
