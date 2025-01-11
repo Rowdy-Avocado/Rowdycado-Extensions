@@ -1,7 +1,7 @@
 // use an integer for version numbers
 import org.jetbrains.kotlin.konan.properties.Properties
 
-version = 8
+version = 9
 
 android {
     buildFeatures {
@@ -10,6 +10,7 @@ android {
 
     defaultConfig {
         val properties = Properties()
+        android.buildFeatures.buildConfig=true
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "HIANIMEAPI", "\"${properties.getProperty("HIANIMEAPI")}\"")
     }

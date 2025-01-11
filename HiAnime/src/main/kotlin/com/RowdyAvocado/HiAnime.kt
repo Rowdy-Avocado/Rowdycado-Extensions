@@ -54,7 +54,7 @@ class HiAnime : MainAPI() {
     override val usesWebView = true
     override val supportedTypes = setOf(TvType.Anime, TvType.AnimeMovie, TvType.OVA)
 
-    val epRegex = Regex("Ep (\\d+)/")
+    //val epRegex = Regex("Ep (\\d+)/")
     var sid: HashMap<Int, String?> = hashMapOf() // Url hashcode to sid
 
     private fun Element.toSearchResult(): SearchResponse {
@@ -223,12 +223,11 @@ class HiAnime : MainAPI() {
     ): Boolean {
         val dubType = data.replace("$mainUrl/", "").split("|").first()
         val epId = data.split("|").last().split("=").last()
-
         val servers: List<String> =
                 app.get("$mainUrl/ajax/v2/episode/servers?episodeId=$epId")
                         .parsed<Response>()
                         .getDocument()
-                        .select(".server-item[data-type=$dubType][data-id]")
+                        .select(".server-item[data-type=raw][data-id],.server-item[data-type=$dubType][data-id]")
                         .map { it.attr("data-id") }
 
         // val extractorData = "https://ws1.rapid-cloud.ru/socket.io/?EIO=4&transport=polling"
@@ -236,7 +235,6 @@ class HiAnime : MainAPI() {
         // Prevent duplicates
         servers.distinct().apmap { it ->
             val link = "$mainUrl/ajax/v2/episode/sources?id=$it"
-
             //Workaround
             val animeEpisodeId=data.substringAfterLast("/").substringBeforeLast("-")
             val serverlist = listOf("hd-1", "hd-2")
