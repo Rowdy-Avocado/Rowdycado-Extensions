@@ -1,16 +1,16 @@
-package com.KillerDogeEmpire
+package com.RowdyAvocado
 
 import android.util.Base64
 import android.util.Log
-import com.KillerDogeEmpire.DumpUtils.queryApi
-import com.KillerDogeEmpire.CodeStream.Companion.anilistAPI
-import com.KillerDogeEmpire.CodeStream.Companion.crunchyrollAPI
-import com.KillerDogeEmpire.CodeStream.Companion.filmxyAPI
-import com.KillerDogeEmpire.CodeStream.Companion.gdbot
-import com.KillerDogeEmpire.CodeStream.Companion.hdmovies4uAPI
-//import com.KillerDogeEmpire.CodeStream.Companion.hdmovies4uAPI
-import com.KillerDogeEmpire.CodeStream.Companion.malsyncAPI
-import com.KillerDogeEmpire.CodeStream.Companion.tvMoviesAPI
+import com.RowdyAvocado.DumpUtils.queryApi
+import com.RowdyAvocado.CodeStream.Companion.anilistAPI
+import com.RowdyAvocado.CodeStream.Companion.crunchyrollAPI
+import com.RowdyAvocado.CodeStream.Companion.filmxyAPI
+import com.RowdyAvocado.CodeStream.Companion.gdbot
+import com.RowdyAvocado.CodeStream.Companion.hdmovies4uAPI
+//import com.RowdyAvocado.CodeStream.Companion.hdmovies4uAPI
+import com.RowdyAvocado.CodeStream.Companion.malsyncAPI
+import com.RowdyAvocado.CodeStream.Companion.tvMoviesAPI
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.APIHolder.getCaptchaToken
 import com.lagradost.cloudstream3.APIHolder.unixTimeMS

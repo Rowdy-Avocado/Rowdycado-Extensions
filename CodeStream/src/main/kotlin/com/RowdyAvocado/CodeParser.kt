@@ -1,4 +1,4 @@
-package com.KillerDogeEmpire
+package com.RowdyAvocado
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.jsoup.Jsoup

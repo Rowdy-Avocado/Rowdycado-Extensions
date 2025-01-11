@@ -28,14 +28,15 @@ cloudstream {
 
 dependencies {
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
     implementation("androidx.preference:preference:1.2.1")
 }
+
 android {
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }

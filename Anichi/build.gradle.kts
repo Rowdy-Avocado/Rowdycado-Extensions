@@ -4,6 +4,10 @@ import org.jetbrains.kotlin.konan.properties.Properties
 version = 11
 
 android {
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
