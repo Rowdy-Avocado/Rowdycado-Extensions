@@ -1,7 +1,7 @@
 // use an integer for version numbers
 import org.jetbrains.kotlin.konan.properties.Properties
 
-version = 10
+version = 11
 
 android {
     buildFeatures {
