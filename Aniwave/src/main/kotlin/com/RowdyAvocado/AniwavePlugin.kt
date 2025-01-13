@@ -16,7 +16,7 @@ enum class ServerList(val link: Pair<String, Boolean>) {
     LI("https://aniwave.li" to false),
     VC("https://aniwave.vc" to false),
     LV("https://aniwave.lv" to true),
-    BEST("https://aniwave.best" to true)
+    BEST("https://aniwave.best" to false)
 }
 
 @CloudstreamPlugin
