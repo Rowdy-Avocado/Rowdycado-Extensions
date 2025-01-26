@@ -220,7 +220,7 @@ class HiAnime : MainAPI() {
             subtitleCallback: (SubtitleFile) -> Unit,
             callback: (ExtractorLink) -> Unit
     ): Boolean {
-        val dubType = data.replace("$mainUrl/", "").split("|").first()
+        val dubType = data.replace("$mainUrl/", "").split("|").firstOrNull() ?: "raw"
         val epId = data.split("|").last().split("=").last()
         val servers: List<String> =
                 app.get("$mainUrl/ajax/v2/episode/servers?episodeId=$epId")
@@ -228,9 +228,15 @@ class HiAnime : MainAPI() {
                         .getDocument()
                         .select(".server-item[data-type=raw][data-id],.server-item[data-type=$dubType][data-id]")
                         .map { it.attr("data-id") }
-
         // val extractorData = "https://ws1.rapid-cloud.ru/socket.io/?EIO=4&transport=polling"
+        val selectedTypes = app.get("$mainUrl/ajax/v2/episode/servers?episodeId=$epId")
+            .parsed<Response>()
+            .getDocument()
+            .select(".server-item[data-type]")
+            .map { it.attr("data-type") }
 
+// Set `dubType` to "raw" if a raw type is present in the selected servers
+        val type = if (selectedTypes.contains("raw")) "raw" else dubType
         // Prevent duplicates
         servers.distinct().apmap { it ->
             val link = "$mainUrl/ajax/v2/episode/sources?id=$it"
@@ -242,11 +248,11 @@ class HiAnime : MainAPI() {
             val serverlist = listOf("hd-1", "hd-2")
             for (server in serverlist )
             {
-                val api="${BuildConfig.HIANIMEAPI}/api/stream?id=$animeEpisodeId?ep=$epId$&server=$server&type=$dubType"
+                val api="${BuildConfig.HIANIMEAPI}/api/stream?id=$animeEpisodeId?ep=$epId$&server=$server&type=$type"
                 app.get(api, referer = api).parsedSafe<Hianime>()?.results?.streamingLink?.let { streamingLink ->
                     val m3u8 = streamingLink.link.file
                     M3u8Helper.generateM3u8(
-                        "HiAnime ${server.uppercase()} ${dubType.uppercase()}",
+                        "HiAnime ${server.uppercase()} ${type.uppercase()}",
                         m3u8,
                         ""
                     ).forEach(callback)
