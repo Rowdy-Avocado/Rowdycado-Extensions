@@ -1,16 +1,19 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 }
+
 // use an integer for version numbers
-version = 6
+version = 7
 
 
 cloudstream {
     // All of these properties are optional, you can safely remove them
 
     description = "Watch movies and series from Flixerz"
-    authors = listOf("RowdyRushya")
+    authors = listOf("RowdyRushya,Phisher98")
 
     /**
     * Status int as the following:
@@ -19,7 +22,7 @@ cloudstream {
     * 2: Slow
     * 3: Beta only
     * */
-    status = 0
+    status = 1
 
     tvTypes = listOf("Movies", "TV Series")
 
@@ -33,5 +36,13 @@ cloudstream {
 android {
     buildFeatures {
         viewBinding = true
+    }
+
+    defaultConfig {
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        android.buildFeatures.buildConfig=true
+        buildConfigField("String", "WASMAPI", "\"${properties.getProperty("WASMAPI")}\"")
+        buildConfigField("String", "Proxy", "\"${properties.getProperty("Proxy")}\"")
     }
 }

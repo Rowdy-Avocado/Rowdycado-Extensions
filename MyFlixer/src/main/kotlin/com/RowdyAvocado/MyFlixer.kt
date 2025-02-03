@@ -1,5 +1,7 @@
 package com.RowdyAvocado
 
+import com.RowdyAvocado.BuildConfig.Proxy
+import com.RowdyAvocado.BuildConfig.WASMAPI
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.Episode
 import com.lagradost.cloudstream3.ErrorLoadingException
@@ -19,10 +21,12 @@ import com.lagradost.cloudstream3.newMovieLoadResponse
 import com.lagradost.cloudstream3.newMovieSearchResponse
 import com.lagradost.cloudstream3.newTvSeriesLoadResponse
 import com.lagradost.cloudstream3.utils.ExtractorLink
+import com.lagradost.cloudstream3.utils.INFER_TYPE
+import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.loadExtractor
 import org.jsoup.nodes.Document
 
-class MyFlixer(val plugin: MyFlixerPlugin) : MainAPI() {
+class MyFlixer : MainAPI() {
     override var mainUrl = "https://myflixerz.to"
     override var name = "MyFlixer"
     override val supportedTypes = setOf(TvType.Movie, TvType.TvSeries)
@@ -48,7 +52,7 @@ class MyFlixer(val plugin: MyFlixerPlugin) : MainAPI() {
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val url = request.data + page
-        val response = app.get(url)
+        val response = app.get("$Proxy$url")
         if (response.code == 200)
                 return newHomePageResponse(
                         request.name,
@@ -62,7 +66,7 @@ class MyFlixer(val plugin: MyFlixerPlugin) : MainAPI() {
         val res = app.get(url)
         if (res.code != 200) throw ErrorLoadingException("Could not load data" + url)
 
-        val type = url.replace("https://", "").split("/")[1]
+        val type = url
         val contentId = res.document.select("div.detail_page-watch").attr("data-id")
         val details = res.document.select("div.detail_page-infor")
         val name = details.select("h2.heading-name > a").text()
@@ -128,9 +132,19 @@ class MyFlixer(val plugin: MyFlixerPlugin) : MainAPI() {
         val serversRes = app.get("$mainUrl/ajax/episode/$data").document.select("a.link-item")
         serversRes.forEach { server ->
             val linkId =
-                    if (server.attr("data-linkid").isNullOrEmpty()) server.attr("data-id")
-                    else server.attr("data-linkid")
+                server.attr("data-linkid").ifEmpty { server.attr("data-id") }
             val source = app.get("$mainUrl/ajax/episode/sources/$linkId").parsedSafe<Source>()
+            val m3u8= app.get("$WASMAPI${source?.link}&referrer=$mainUrl").parsedSafe<MyFlixerParser>()?.sources?.first()?.file
+            callback.invoke(
+                ExtractorLink(
+                    name,
+                    name,
+                    m3u8 ?:"",
+                    "",
+                    Qualities.P1080.value,
+                    INFER_TYPE
+                )
+            )
             if (source?.link.toString().contains("megacloud.tv/embed-1"))
                     Megacloud2().getUrl(source?.link.toString(), null, subtitleCallback, callback)
             else loadExtractor(source?.link.toString(), subtitleCallback, callback)

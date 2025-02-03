@@ -69,6 +69,8 @@ jobs:
           MovieDrive_API: ${{ secrets.MovieDrive_API }}
           AsianDrama_API: ${{ secrets.AsianDrama_API }}
           HIANIMEAPI: ${{ secrets.HIANIMEAPI }}
+          WASMAPI: ${{ secrets.WASMAPI }}
+          Proxy: ${{ secrets.Proxy }}
         run: |
           cd $GITHUB_WORKSPACE/src
           echo TMDB_API=$TMDB_API >> local.properties
@@ -95,6 +97,8 @@ jobs:
           echo MovieDrive_API=$MovieDrive_API >> local.properties
           echo AsianDrama_API=$AsianDrama_API >> local.properties
           echo HIANIMEAPI=$HIANIMEAPI >> local.properties
+          echo Proxy=$Proxy >> local.properties
+          echo WASMAPI=$WASMAPI >> local.properties
 
       - name: Build Plugins
         run: |
