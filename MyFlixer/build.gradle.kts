@@ -30,7 +30,7 @@ cloudstream {
     language = "en"
 
     // random cc logo i found
-    iconUrl = "https://myflixerz.me/images/favicon.png"
+    iconUrl = "https://myflixerz.to/images/group_1/theme_7/logo.png?v=0.1"
 }
 
 android {
