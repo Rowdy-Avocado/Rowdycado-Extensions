@@ -1,12 +1,11 @@
 package com.RowdyAvocado
 
+import com.lagradost.cloudstream3.plugins.BasePlugin
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
-import com.lagradost.cloudstream3.plugins.Plugin
-import android.content.Context
 
 @CloudstreamPlugin
-class TemplatePlugin: Plugin() {
-    override fun load(context: Context) {
+class TemplatePlugin: BasePlugin() {
+    override fun load() {
         registerMainAPI(KinoKiste())
     }
 }

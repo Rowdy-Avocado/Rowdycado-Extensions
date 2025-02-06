@@ -35,7 +35,6 @@ import com.lagradost.cloudstream3.utils.ExtractorApi
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.getQualityFromName
-import java.net.URLEncoder
 import kotlin.io.encoding.Base64
 import kotlinx.coroutines.delay
 import org.jsoup.Jsoup

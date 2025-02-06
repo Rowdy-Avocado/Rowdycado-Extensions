@@ -1,10 +1,5 @@
 package com.RowdyAvocado
 
-//import android.util.Log
-import com.lagradost.cloudstream3.extractors.Filesim
-import com.lagradost.cloudstream3.extractors.GMPlayer
-import com.lagradost.cloudstream3.extractors.StreamSB
-import com.lagradost.cloudstream3.extractors.Voe
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.api.Log
 import com.lagradost.cloudstream3.APIHolder.getCaptchaToken
@@ -12,22 +7,26 @@ import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.amap
 import com.lagradost.cloudstream3.apmap
 import com.lagradost.cloudstream3.app
-import com.lagradost.cloudstream3.extractors.DoodLaExtractor
-import com.lagradost.cloudstream3.extractors.Jeniusplay
-import com.lagradost.cloudstream3.extractors.PixelDrain
-import com.lagradost.cloudstream3.extractors.VidhideExtractor
-import com.lagradost.cloudstream3.utils.*
-import java.math.BigInteger
-import java.security.MessageDigest
 import com.lagradost.cloudstream3.extractors.Chillx
+import com.lagradost.cloudstream3.extractors.DoodLaExtractor
+import com.lagradost.cloudstream3.extractors.Filesim
+import com.lagradost.cloudstream3.extractors.GMPlayer
+import com.lagradost.cloudstream3.extractors.Jeniusplay
 import com.lagradost.cloudstream3.extractors.MixDrop
+import com.lagradost.cloudstream3.extractors.PixelDrain
+import com.lagradost.cloudstream3.extractors.StreamSB
 import com.lagradost.cloudstream3.extractors.StreamWishExtractor
+import com.lagradost.cloudstream3.extractors.VidhideExtractor
+import com.lagradost.cloudstream3.extractors.Voe
+import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils
 import com.lagradost.cloudstream3.utils.ExtractorApi
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.M3u8Helper
 import okhttp3.FormBody
 import org.json.JSONObject
+import java.math.BigInteger
+import java.security.MessageDigest
 
 open class Playm4u : ExtractorApi() {
     override val name = "Playm4u"

@@ -1,12 +1,11 @@
 package com.RowdyAvocado
 
-import android.content.Context
 import android.os.Handler
+import com.lagradost.cloudstream3.plugins.BasePlugin
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
-import com.lagradost.cloudstream3.plugins.Plugin
 
 @CloudstreamPlugin
-class MoviesNiPipayPlugin : Plugin() {
+class MoviesNiPipayPlugin : BasePlugin() {
     companion object {
         inline fun Handler.postFunction(crossinline function: () -> Unit) {
             this.post(
@@ -19,7 +18,7 @@ class MoviesNiPipayPlugin : Plugin() {
         }
     }
 
-    override fun load(context: Context) {
+    override fun load() {
         registerMainAPI(MoviesNiPipay(this))
     }
 }

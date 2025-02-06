@@ -24,6 +24,7 @@ cloudstream {
     iconUrl = "https://upload.wikimedia.org/wikipedia/commons/2/2f/Korduene_Logo.png"
 
     requiresResources = true
+    isCrossPlatform = true
 }
 
 android {

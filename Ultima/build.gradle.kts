@@ -31,6 +31,8 @@ cloudstream {
 
     // random cc logo i found
     iconUrl = "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/master/logos/ultima.png"
+
+    isCrossPlatform = false
 }
 
 android {
@@ -45,4 +47,10 @@ android {
         buildConfigField("String", "SIMKL_API", "\"${properties.getProperty("SIMKL_API")}\"")
         buildConfigField("String", "MAL_API", "\"${properties.getProperty("MAL_API")}\"")
     }
+}
+
+dependencies {
+    // FIXME remove this when crossplatform is fully supported
+    val cloudstream by configurations
+    cloudstream("com.lagradost:cloudstream3:pre-release")
 }

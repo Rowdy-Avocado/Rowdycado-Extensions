@@ -1,6 +1,5 @@
 package com.RowdyAvocado
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -112,7 +111,7 @@ class BottomFragment(private val plugin: AniwavePlugin) : BottomSheetDialogFragm
         return dialog
     }
 
-    @SuppressLint("SetTextI18n")
+    @Suppress("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }

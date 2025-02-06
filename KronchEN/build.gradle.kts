@@ -23,4 +23,12 @@ cloudstream {
     )
 
     iconUrl = "https://raw.githubusercontent.com/Stormunblessed/IPTV-CR-NIC/main/logos/kronch.png"
+
+    isCrossPlatform = false
+}
+
+dependencies {
+    // FIXME remove this when crossplatform is fully supported (only SubtitleHelper)
+    val cloudstream by configurations
+    cloudstream("com.lagradost:cloudstream3:pre-release")
 }

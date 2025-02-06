@@ -1,8 +1,8 @@
 package com.RowdyAvocado
 
-import android.util.Base64
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.base64Decode
 import com.lagradost.cloudstream3.extractors.StreamWishExtractor
 import com.lagradost.cloudstream3.extractors.VidhideExtractor
 import com.lagradost.cloudstream3.extractors.helper.GogoHelper
@@ -47,9 +47,7 @@ class AllWishExtractor : ExtractorApi() {
                     val tempRes = app.get(url, headers = AllWish.refHeader)
                     val encryptedSource = tempRes.url.substringAfterLast("?data=#")
                     if (encryptedSource.isNotBlank()) {
-                        val link =
-                                Base64.decode(encryptedSource, Base64.DEFAULT)
-                                        .toString(Charsets.UTF_8)
+                        val link = base64Decode(encryptedSource)
                         callback.invoke(buildExtractorLink(serverName, link))
                     }
                 }

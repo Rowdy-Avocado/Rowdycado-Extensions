@@ -1,8 +1,8 @@
 package com.RowdyAvocado
 
-import android.util.Log
 import com.RowdyAvocado.UltimaUtils.Category
 import com.RowdyAvocado.UltimaUtils.LinkData
+import com.lagradost.api.Log
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.extractors.VidSrcExtractor
 import com.lagradost.cloudstream3.utils.ExtractorLink

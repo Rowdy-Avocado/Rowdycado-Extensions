@@ -23,4 +23,6 @@ cloudstream {
     )
 
     iconUrl = "https://raw.githubusercontent.com/Stormunblessed/IPTV-CR-NIC/main/logos/kronch.png"
+
+    isCrossPlatform = true
 }

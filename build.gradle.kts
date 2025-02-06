@@ -70,11 +70,9 @@ subprojects {
     }
 
     dependencies {
-        val cloudstream by configurations
         val implementation by configurations
 
-        // Stubs for all Cloudstream classes
-        cloudstream("com.lagradost:cloudstream3:pre-release")
+        implementation("com.github.recloudstream.cloudstream:library-jvm:master-SNAPSHOT")
 
         // these dependencies can include any of those which are added by the app,
         // but you dont need to include any of them if you dont need them
@@ -86,7 +84,7 @@ subprojects {
         implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
         implementation("io.karn:khttp-android:0.1.2")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
-        implementation("com.faendir.rhino:rhino-android:1.6.0")
+        implementation("org.mozilla:rhino:1.8.0")
     }
 }
 

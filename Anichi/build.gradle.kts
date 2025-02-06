@@ -16,7 +16,6 @@ android {
         buildConfigField("String", "ANICHI_SERVER", "\"${properties.getProperty("ANICHI_SERVER")}\"")
         buildConfigField("String", "ANICHI_ENDPOINT", "\"${properties.getProperty("ANICHI_ENDPOINT")}\"")
         buildConfigField("String", "ANICHI_APP", "\"${properties.getProperty("ANICHI_APP")}\"")
-
     }
 }
 
@@ -42,4 +41,6 @@ cloudstream {
     )
 
     iconUrl = "https://cdn.discordapp.com/attachments/1109266606292488297/1200425504432472176/Anichi.png?ex=65eb0c5f&is=65d8975f&hm=974898b22b08774a5caa835b40546a6419280446b68255147dd1febb3abe9119&"
+
+    isCrossPlatform = false
 }
