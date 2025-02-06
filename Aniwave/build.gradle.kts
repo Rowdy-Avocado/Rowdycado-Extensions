@@ -24,13 +24,14 @@ cloudstream {
     iconUrl = "https://aniwave.best/aniwave/images/favicon.png"
     
     requiresResources = true
+    isCrossPlatform = false
 }
 
 dependencies {
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.6")
     implementation("androidx.preference:preference:1.2.1")
 }
 
@@ -39,4 +40,10 @@ android {
         buildConfig = true
         viewBinding = true
     }
+}
+
+dependencies {
+    // FIXME remove this when crossplatform is fully supported (only SubtitleHelper)
+    val cloudstream by configurations
+    cloudstream("com.lagradost:cloudstream3:pre-release")
 }

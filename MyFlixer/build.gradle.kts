@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.konan.properties.Properties
 
 dependencies {
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
 }
 
 // use an integer for version numbers
@@ -31,6 +31,8 @@ cloudstream {
 
     // random cc logo i found
     iconUrl = "https://myflixerz.to/images/group_1/theme_7/logo.png?v=0.1"
+
+    isCrossPlatform = false
 }
 
 android {

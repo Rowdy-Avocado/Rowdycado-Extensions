@@ -21,4 +21,6 @@ cloudstream {
     )
 
     iconUrl = "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/master/logos/onepace.png"
+
+    isCrossPlatform = true
 }

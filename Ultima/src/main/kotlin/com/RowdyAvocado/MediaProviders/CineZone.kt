@@ -1,6 +1,5 @@
 package com.RowdyAvocado
 
-import android.util.Base64
 import com.RowdyAvocado.UltimaMediaProvidersUtils.ServerName
 import com.RowdyAvocado.UltimaMediaProvidersUtils.commonLinkLoader
 import com.RowdyAvocado.UltimaUtils.Category
@@ -9,12 +8,16 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.apmap
 import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.base64Decode
+import com.lagradost.cloudstream3.base64DecodeArray
+import com.lagradost.cloudstream3.base64Encode
 import com.lagradost.cloudstream3.utils.ExtractorLink
-import java.net.URLDecoder
-import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
+import com.lagradost.cloudstream3.utils.StringUtils.decodeUri
+import com.lagradost.cloudstream3.utils.StringUtils.encodeUri
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 
 class CineZoneMediaProvider : MediaProvider() {
     override val name = "CineZone"
@@ -80,11 +83,11 @@ class CineZoneMediaProvider : MediaProvider() {
 				"exchange" -> vrf = exchange(vrf, step.keys?.get(0) ?: "", step.keys?.get(1) ?: "")
 				"rc4" -> vrf = rc4Encryption(step.keys?.get(0) ?: "", vrf)
 				"reverse" -> vrf = vrf.reversed()
-				"base64" -> vrf = Base64.encode(vrf.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP).toString(Charsets.UTF_8)
+				"base64" -> vrf = base64Encode(vrf.toByteArray())
 				"else" -> {}
 			}
 		}
-		vrf = java.net.URLEncoder.encode(vrf, "UTF-8")
+		vrf = vrf.encodeUri()
 		return vrf
     }
 
@@ -95,11 +98,11 @@ class CineZoneMediaProvider : MediaProvider() {
 				"exchange" -> vrf = exchange(vrf, step.keys?.get(1) ?: "", step.keys?.get(0) ?: "")
 				"rc4" -> vrf = rc4Decryption(step.keys?.get(0) ?: "", vrf)
 				"reverse" -> vrf = vrf.reversed()
-				"base64" -> vrf = Base64.decode(vrf, Base64.URL_SAFE).toString(Charsets.UTF_8)
+				"base64" -> vrf = base64Decode(vrf)
 				"else" -> {}
 			}
 		}
-		return URLDecoder.decode(vrf, "utf-8")
+		return vrf.decodeUri()
 	}
 
 	private fun rc4Encryption(key: String, input: String): String {
@@ -107,13 +110,11 @@ class CineZoneMediaProvider : MediaProvider() {
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)
         var output = cipher.doFinal(input.toByteArray())
-        output = Base64.encode(output, Base64.URL_SAFE or Base64.NO_WRAP)
-        return output.toString(Charsets.UTF_8)
+        return base64Encode(output)
 	}
 
     private fun rc4Decryption(key: String, input: String): String {
-        var vrf = input.toByteArray()
-        vrf = Base64.decode(vrf, Base64.URL_SAFE)
+        var vrf = base64DecodeArray(input)
         val rc4Key = SecretKeySpec(key.toByteArray(), "RC4")
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)

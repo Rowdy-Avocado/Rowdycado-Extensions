@@ -1,12 +1,11 @@
 package com.RowdyAvocado
 
-import android.content.Context
+import com.lagradost.cloudstream3.plugins.BasePlugin
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
-import com.lagradost.cloudstream3.plugins.Plugin
 
 @CloudstreamPlugin
-class AnichiPlugin : Plugin() {
-    override fun load(context: Context) {
+class AnichiPlugin : BasePlugin() {
+    override fun load() {
         registerMainAPI(Anichi())
     }
 }

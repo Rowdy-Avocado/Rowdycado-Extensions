@@ -1,6 +1,5 @@
 package com.RowdyAvocado
 
-import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
 import android.webkit.JavascriptInterface
@@ -42,7 +41,7 @@ class JsInterceptor(private val serverid: String, private val lang: String) : In
         }
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    @Suppress("SetJavaScriptEnabled")
     private fun resolveWithWebView(request: Request): Request? {
         val latch = CountDownLatch(1)
 

@@ -21,4 +21,6 @@ cloudstream {
     )
 
     iconUrl = "https://tokybook.com/wp-content/uploads/TOKY-BOOK-website.png"
+
+    isCrossPlatform = true
 }

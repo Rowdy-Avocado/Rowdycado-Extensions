@@ -1,6 +1,6 @@
 dependencies {
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
 }
 // use an integer for version numbers
 version = 10
@@ -28,6 +28,8 @@ cloudstream {
 
     // random cc logo i found
     iconUrl = "https://manga.all-wish.me/favicon.ico"
+
+    isCrossPlatform = false
 }
 
 android {
@@ -37,7 +39,15 @@ android {
 
     defaultConfig {
         minSdk = 21
-        compileSdkVersion(35)
+        compileSdk = 35
+    }
+
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        targetSdk = 35
+    }
+
+    lint {
         targetSdk = 35
     }
 }

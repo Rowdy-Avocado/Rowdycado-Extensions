@@ -2,6 +2,7 @@ package com.RowdyAvocado
 
 import com.RowdyAvocado.RabbitStream.Companion.extractRabbitStream
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lagradost.api.Log
 import com.lagradost.cloudstream3.Actor
 import com.lagradost.cloudstream3.ActorData
 import com.lagradost.cloudstream3.ActorRole
@@ -35,11 +36,11 @@ import com.lagradost.cloudstream3.utils.ExtractorLink
 import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.loadExtractor
 import com.lagradost.nicehttp.Requests.Companion.await
-import java.net.URI
 import okhttp3.Interceptor
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.net.URI
 
 private const val OPTIONS = "OPTIONS"
 

@@ -27,7 +27,7 @@ import kotlin.collections.first
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
-class MoviesNiPipay(val plugin: MoviesNiPipayPlugin) : MainAPI() {
+class MoviesNiPipay : MainAPI() {
     override var mainUrl = "https://moviesnipipay.me"
     override var name = "MoviesNiPipay"
     override var supportedTypes = setOf(TvType.Movie, TvType.TvSeries)

@@ -1,13 +1,8 @@
 package com.RowdyAvocado
 
-import android.util.Log
 import com.RowdyAvocado.CodeExtractor.invokeAnitaku
-import com.RowdyAvocado.CodeExtractor.invokeBollyflix
 import com.RowdyAvocado.CodeExtractor.invokeMoviesmod
-import com.RowdyAvocado.CodeExtractor.invokeVegamovies
-import com.RowdyAvocado.CodeExtractor.invokeMoviesdrive
-import com.RowdyAvocado.CodeExtractor.invokeTopMovies
-import com.RowdyAvocado.CodeExtractor.invokeUhdmovies
+import com.lagradost.api.Log
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.argamap
 import com.lagradost.cloudstream3.utils.AppUtils

@@ -1,29 +1,27 @@
 package com.RowdyAvocado
 
-import android.annotation.SuppressLint
-import android.util.Log
+import com.lagradost.api.Log
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.APIHolder.unixTimeMS
-import com.lagradost.cloudstream3.utils.*
-import com.lagradost.cloudstream3.utils.AppUtils.tryParseJson
-import com.lagradost.nicehttp.Requests
-import com.lagradost.nicehttp.Session
+import com.lagradost.cloudstream3.extractors.VidSrcExtractor
+import com.lagradost.cloudstream3.extractors.VidSrcTo
 import com.lagradost.cloudstream3.extractors.helper.AesHelper.cryptoAESHandler
 import com.lagradost.cloudstream3.mvvm.safeApiCall
+import com.lagradost.cloudstream3.network.CloudflareKiller
 import com.lagradost.cloudstream3.network.WebViewResolver
+import com.lagradost.cloudstream3.utils.*
+import com.lagradost.cloudstream3.utils.AppUtils.toJson
+import com.lagradost.cloudstream3.utils.AppUtils.tryParseJson
 import com.lagradost.nicehttp.RequestBodyTypes
+import com.lagradost.nicehttp.Requests
+import com.lagradost.nicehttp.Session
 import kotlinx.coroutines.delay
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.jsoup.*
 import org.jsoup.select.Elements
-import com.lagradost.cloudstream3.utils.AppUtils.toJson
 import org.mozilla.javascript.Scriptable
-import com.lagradost.cloudstream3.extractors.VidSrcTo
-import com.lagradost.cloudstream3.extractors.VidSrcExtractor
-import com.lagradost.cloudstream3.extractors.helper.GogoHelper
-import com.lagradost.cloudstream3.network.CloudflareKiller
 
 
 val session = Session(Requests().baseClient)
@@ -113,7 +111,7 @@ object CodeExtractor : CodeStream() {
             }
         }
     */
-    @SuppressLint("SuspiciousIndentation")
+    @Suppress("SuspiciousIndentation")
     suspend fun invokeVidSrc(
         id: Int? = null,
         season: Int? = null,
@@ -183,7 +181,7 @@ object CodeExtractor : CodeStream() {
         };
         """.trimIndent()
             val rhino = org.mozilla.javascript.Context.enter()
-            rhino.optimizationLevel = -1
+            rhino.setInterpretedMode(true)
             val scope: Scriptable = rhino.initSafeStandardObjects()
             rhino.evaluateString(scope, firstJS + script, "JavaScript", 1, null)
             val file =
@@ -1451,7 +1449,7 @@ object CodeExtractor : CodeStream() {
 
     }
 
-    @SuppressLint("SuspiciousIndentation")
+    @Suppress("SuspiciousIndentation")
     suspend fun invokeUhdmovies(
         title: String? = null,
         year: Int? = null,
@@ -3323,7 +3321,7 @@ object CodeExtractor : CodeStream() {
         }
     }
 
-    @SuppressLint("SuspiciousIndentation")
+    @Suppress("SuspiciousIndentation")
     suspend fun invokeBollyflix(
         title: String? = null,
         year: Int? = null,

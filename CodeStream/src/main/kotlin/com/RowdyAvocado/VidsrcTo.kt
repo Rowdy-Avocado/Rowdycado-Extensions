@@ -1,10 +1,10 @@
 package com.RowdyAvocado
 
-import android.util.Base64
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.apmap
 import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.base64DecodeArray
 import com.lagradost.cloudstream3.extractors.FileMoon
 import com.lagradost.cloudstream3.extractors.Vidplay
 import com.lagradost.cloudstream3.utils.ExtractorApi
@@ -50,8 +50,7 @@ class VidsrcTo : ExtractorApi() {
     }
 
     private fun DecryptUrl(encUrl: String): String {
-        var data = encUrl.toByteArray()
-        data = Base64.decode(data, Base64.URL_SAFE)
+        var data = base64DecodeArray(encUrl)
         val rc4Key = SecretKeySpec("WXrUARXb1aDLaZjI".toByteArray(), "RC4")
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)

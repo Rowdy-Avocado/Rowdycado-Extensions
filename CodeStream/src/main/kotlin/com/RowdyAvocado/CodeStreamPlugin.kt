@@ -1,8 +1,7 @@
 package com.RowdyAvocado
 
+import com.lagradost.cloudstream3.plugins.BasePlugin
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
-import com.lagradost.cloudstream3.plugins.Plugin
-import android.content.Context
 import com.lagradost.cloudstream3.extractors.DoodYtExtractor
 import com.lagradost.cloudstream3.extractors.FileMoon
 import com.lagradost.cloudstream3.extractors.Gofile
@@ -18,8 +17,8 @@ import com.lagradost.cloudstream3.extractors.Vidplay
 import com.lagradost.cloudstream3.extractors.Voe
 
 @CloudstreamPlugin
-class CodeStreamPlugin: Plugin() {
-    override fun load(context: Context) {
+class CodeStreamPlugin: BasePlugin() {
+    override fun load() {
         // All providers should be added in this manner. Please don't edit the providers list directly.
         registerMainAPI(CodeStream())
         registerMainAPI(CodeStreamLite())

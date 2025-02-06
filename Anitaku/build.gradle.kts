@@ -24,4 +24,6 @@ cloudstream {
     )
 
     iconUrl = "https://www.google.com/s2/favicons?domain=anitaku.to&sz=%size%"
+
+    isCrossPlatform = true
 }

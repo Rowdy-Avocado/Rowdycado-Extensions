@@ -1,13 +1,14 @@
 package com.RowdyAvocado
 
-import android.util.Base64
-import com.RowdyAvocado.UltimaStorageManager as sm
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.base64Decode
+import com.lagradost.cloudstream3.base64Encode
 import com.lagradost.cloudstream3.mapper
 import com.lagradost.cloudstream3.ui.home.HomeViewModel.Companion.getResumeWatching
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.DataStoreHelper.ResumeWatchingResult
+import com.RowdyAvocado.UltimaStorageManager as sm
 
 object WatchSyncUtils {
     data class WatchSyncCreds(
@@ -106,8 +107,7 @@ object WatchSyncUtils {
             val failure = false to "something went wrong"
             if (!isLoggedIn()) return failure
             val syncData = getResumeWatching()?.toStringData() ?: "[]"
-            val data =
-                    Base64.encodeToString(syncData.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP)
+            val data = base64Encode(syncData.toByteArray())
             val query =
                     """ mutation AddProjectV2DraftIssue { addProjectV2DraftIssue( input: { projectId: "$projectId", title: "$deviceName", body: "$data" } ) { projectItem { id content { ... on DraftIssue { id } } } } } """
             val res = apiCall(query.toStringData()) ?: return failure
@@ -138,8 +138,7 @@ object WatchSyncUtils {
             if (!isLoggedIn()) return failure
             if (!isThisDeviceSync) return failure
             val syncData = getResumeWatching()?.toStringData() ?: "[]"
-            val data =
-                    Base64.encodeToString(syncData.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP)
+            val data = base64Encode(syncData.toByteArray())
             val query =
                     """ mutation UpdateProjectV2DraftIssue { updateProjectV2DraftIssue( input: { draftIssueId: "$deviceId", title: "$deviceName", body: "$data" } ) { draftIssue { id } } } """
             apiCall(query.toStringData()) ?: return failure
@@ -153,12 +152,7 @@ object WatchSyncUtils {
             val res = apiCall(query.toStringData()) ?: return null
             val data =
                     res.data.viewer?.projectV2?.items?.nodes?.map {
-                        val data =
-                                Base64.decode(
-                                                it.content.bodyText,
-                                                Base64.URL_SAFE or Base64.NO_WRAP
-                                        )
-                                        .toString(Charsets.UTF_8)
+                        val data = base64Decode(it.content.bodyText)
                         val syncData =
                                 parseJson<Array<ResumeWatchingResult>?>(data)?.toList()
                                         ?: return null

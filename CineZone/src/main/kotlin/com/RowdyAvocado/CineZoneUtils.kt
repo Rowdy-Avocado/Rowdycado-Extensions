@@ -1,13 +1,15 @@
 package com.RowdyAvocado
 
-import android.util.Base64
 import java.net.URI
 import java.net.URLDecoder
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 import com.RowdyAvocado.CineZone.Keys
+import com.lagradost.cloudstream3.base64Decode
+import com.lagradost.cloudstream3.base64DecodeArray
+import com.lagradost.cloudstream3.base64Encode
 
-@OptIn(kotlin.ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 object CineZoneUtils {
 
     fun vrfEncrypt(keys: Keys, input: String): String {
@@ -17,7 +19,7 @@ object CineZoneUtils {
 				"exchange" -> vrf = exchange(vrf, step.keys?.get(0) ?: "", step.keys?.get(1) ?: "")
 				"rc4" -> vrf = rc4Encryption(step.keys?.get(0) ?: "", vrf)
 				"reverse" -> vrf = vrf.reversed()
-				"base64" -> vrf = Base64.encode(vrf.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP).toString(Charsets.UTF_8)
+				"base64" -> vrf = base64Encode(vrf.toByteArray())
 				"else" -> {}
 			}
 		}
@@ -32,7 +34,7 @@ object CineZoneUtils {
 				"exchange" -> vrf = exchange(vrf, step.keys?.get(1) ?: "", step.keys?.get(0) ?: "")
 				"rc4" -> vrf = rc4Decryption(step.keys?.get(0) ?: "", vrf)
 				"reverse" -> vrf = vrf.reversed()
-				"base64" -> vrf = Base64.decode(vrf, Base64.URL_SAFE).toString(Charsets.UTF_8)
+				"base64" -> vrf = base64Decode(vrf)
 				"else" -> {}
 			}
 		}
@@ -44,13 +46,12 @@ object CineZoneUtils {
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)
         var output = cipher.doFinal(input.toByteArray())
-        output = Base64.encode(output, Base64.URL_SAFE or Base64.NO_WRAP)
+        output = base64Encode(output).encodeToByteArray()
         return output.toString(Charsets.UTF_8)
 	}
 
     private fun rc4Decryption(key: String, input: String): String {
-        var vrf = input.toByteArray()
-        vrf = Base64.decode(vrf, Base64.URL_SAFE)
+        var vrf = base64DecodeArray(input)
         val rc4Key = SecretKeySpec(key.toByteArray(), "RC4")
         val cipher = Cipher.getInstance("RC4")
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)

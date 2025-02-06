@@ -22,7 +22,7 @@ import com.lagradost.cloudstream3.utils.ExtractorLink
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
-class AllWish(val plugin: AllWishPlugin) : MainAPI() {
+class AllWish : MainAPI() {
     override var mainUrl = AllWish.mainUrl
     override var name = AllWish.name
     override var supportedTypes = setOf(TvType.Anime, TvType.AnimeMovie, TvType.OVA)

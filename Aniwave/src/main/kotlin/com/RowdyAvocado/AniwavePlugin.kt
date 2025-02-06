@@ -35,7 +35,7 @@ class AniwavePlugin : Plugin() {
                 }
 
         // if disabled server is selected by default, this will switch it to BEST server.
-        ServerList.values().find { it.link.first.equals(currentAniwaveServer) }?.let {
+        ServerList.entries.find { it.link.first == currentAniwaveServer }?.let {
             if (!it.link.second) {
                 currentAniwaveServer = ServerList.BEST.link.first
                 reload(context)
