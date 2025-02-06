@@ -32,7 +32,7 @@ import com.lagradost.cloudstream3.toRatingInt
 import com.lagradost.cloudstream3.utils.AppUtils.tryParseJson
 import com.lagradost.cloudstream3.utils.Coroutines.ioSafe
 import com.lagradost.cloudstream3.utils.ExtractorLink
-import com.lagradost.cloudstream3.utils.M3u8Helper
+import com.lagradost.cloudstream3.utils.Qualities
 import com.lagradost.cloudstream3.utils.loadExtractor
 import com.lagradost.nicehttp.Requests.Companion.await
 import java.net.URI
@@ -248,28 +248,33 @@ class HiAnime : MainAPI() {
             val serverlist = listOf("hd-1", "hd-2")
             for (server in serverlist )
             {
-                val api="${BuildConfig.HIANIMEAPI}/api/stream?id=$animeEpisodeId?ep=$epId$&server=$server&type=$type"
-                app.get(api, referer = api).parsedSafe<Hianime>()?.results?.streamingLink?.let { streamingLink ->
-                    val m3u8 = streamingLink.link.file
-                    M3u8Helper.generateM3u8(
-                        "HiAnime ${server.uppercase()} ${type.uppercase()}",
-                        m3u8,
-                        ""
-                    ).forEach(callback)
+                val api="${BuildConfig.HIANIMEAPI}/$type.php?id=$animeEpisodeId?ep=$epId&server=$server&embed=true"
+                app.get(api, referer = api).toString().let { responseText ->
+                    val m3u8Regex = """url\s*:\s*'([^']+\.m3u8)'""".toRegex()
+                    val m3u8Url = m3u8Regex.find(responseText)?.groups?.get(1)?.value
+                    m3u8Url?.let { m3u8 ->
+                        callback.invoke(
+                            ExtractorLink(
+                                "HiAnime ${server.uppercase()} ${type.uppercase()}",
+                                "HiAnime ${server.uppercase()} ${type.uppercase()}",
+                                m3u8,
+                                mainUrl,
+                                Qualities.P1080.value,
+                                isM3u8 = true,
+                            )
+                        )
+                    }
 
-                    streamingLink.tracks.forEach { track ->
-                        track.label?.let { lang -> // Proceed only if the label is not null
-                            try {
-                                subtitleCallback.invoke(
-                                    SubtitleFile(
-                                        lang,
-                                        track.file
-                                    )
-                                )
-                            } catch (e: Exception) {
-                                android.util.Log.e("Phisher", "Error processing subtitle for language: $lang, file: ${track.file}", e)
-                            }
-                        } ?: android.util.Log.w("Phisher", "Skipping track due to missing label for file: ${track.file}")
+                    val trackRegex = """html:\s*'([^']+)',\s*url:\s*'([^']+)'""".toRegex()
+                    trackRegex.findAll(responseText).forEach { matchResult ->
+                        val lang = matchResult.groups[1]?.value ?: ""
+                        val file = matchResult.groups[2]?.value ?: ""
+                        subtitleCallback.invoke(
+                            SubtitleFile(
+                                lang,
+                                file
+                            )
+                        )
                     }
                 }
             }
@@ -354,60 +359,5 @@ class HiAnime : MainAPI() {
 
     private data class RapidCloudResponse(@JsonProperty("link") val link: String)
     // #endregion - Data classes
-
-
-
-    //Parser
-
-    data class Hianime(
-        val success: Boolean,
-        val results: HianimeResults,
-    )
-
-    data class HianimeResults(
-        val streamingLink: HianimeStreamingLink,
-        val servers: List<HianimeServer>,
-    )
-
-    data class HianimeStreamingLink(
-        val id: String,
-        val type: String,
-        val link: HianimeLink,
-        val tracks: List<HianimeTrack>,
-        val intro: Intro,
-        val outro: Outro,
-        val server: String,
-    )
-
-    data class HianimeLink(
-        val file: String,
-        val type: String,
-    )
-
-    data class HianimeTrack(
-        val file: String,
-        val label: String?,
-        val kind: String,
-        val default: Boolean?,
-    )
-
-    data class Intro(
-        val start: Long,
-        val end: Long,
-    )
-
-    data class Outro(
-        val start: Long,
-        val end: Long,
-    )
-
-    data class HianimeServer(
-        val type: String,
-        @JsonProperty("data_id")
-        val dataId: String,
-        @JsonProperty("server_id")
-        val serverId: String,
-        val serverName: String,
-    )
 
 }
