@@ -16,6 +16,5 @@ cloudstream {
 
     iconUrl = "https://kinokiste.live/templates/kkiste/images/favicon.ico"
 
-    requiresResources = true
     isCrossPlatform = true
 }

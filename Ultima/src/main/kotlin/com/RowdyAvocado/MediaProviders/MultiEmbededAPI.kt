@@ -40,7 +40,7 @@ class MultiEmbededAPIProvider : MediaProvider() {
         };
         """.trimIndent()
             val rhino = org.mozilla.javascript.Context.enter()
-            rhino.optimizationLevel = -1
+            rhino.setInterpretedMode(true)
             val scope: Scriptable = rhino.initSafeStandardObjects()
             rhino.evaluateString(scope, firstJS + script, "JavaScript", 1, null)
             val file =
