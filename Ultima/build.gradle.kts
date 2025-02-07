@@ -4,6 +4,10 @@ import org.jetbrains.kotlin.konan.properties.Properties
 
 dependencies {
     implementation("com.google.android.material:material:1.12.0")
+
+    // FIXME remove this when crossplatform is fully supported
+    val cloudstream by configurations
+    cloudstream("com.lagradost:cloudstream3:pre-release")
 }
 // use an integer for version numbers
 version = 42
@@ -47,10 +51,4 @@ android {
         buildConfigField("String", "SIMKL_API", "\"${properties.getProperty("SIMKL_API")}\"")
         buildConfigField("String", "MAL_API", "\"${properties.getProperty("MAL_API")}\"")
     }
-}
-
-dependencies {
-    // FIXME remove this when crossplatform is fully supported
-    val cloudstream by configurations
-    cloudstream("com.lagradost:cloudstream3:pre-release")
 }

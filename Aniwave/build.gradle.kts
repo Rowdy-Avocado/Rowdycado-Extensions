@@ -33,6 +33,10 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.6")
     implementation("androidx.preference:preference:1.2.1")
+
+    // FIXME remove this when crossplatform is fully supported (only SubtitleHelper)
+    val cloudstream by configurations
+    cloudstream("com.lagradost:cloudstream3:pre-release")
 }
 
 android {
@@ -40,10 +44,4 @@ android {
         buildConfig = true
         viewBinding = true
     }
-}
-
-dependencies {
-    // FIXME remove this when crossplatform is fully supported (only SubtitleHelper)
-    val cloudstream by configurations
-    cloudstream("com.lagradost:cloudstream3:pre-release")
 }
