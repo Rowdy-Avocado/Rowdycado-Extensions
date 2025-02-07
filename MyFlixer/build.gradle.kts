@@ -1,10 +1,5 @@
 import org.jetbrains.kotlin.konan.properties.Properties
 
-dependencies {
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
-}
-
 // use an integer for version numbers
 version = 7
 
@@ -26,20 +21,16 @@ cloudstream {
 
     tvTypes = listOf("Movies", "TV Series")
 
-    requiresResources = true
     language = "en"
 
     // random cc logo i found
     iconUrl = "https://myflixerz.to/images/group_1/theme_7/logo.png?v=0.1"
 
+    // Because we use android.graphics.BitmapFactory
     isCrossPlatform = false
 }
 
 android {
-    buildFeatures {
-        viewBinding = true
-    }
-
     defaultConfig {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())

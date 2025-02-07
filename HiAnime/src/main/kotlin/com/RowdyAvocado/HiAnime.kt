@@ -2,7 +2,6 @@ package com.RowdyAvocado
 
 import com.RowdyAvocado.RabbitStream.Companion.extractRabbitStream
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.lagradost.api.Log
 import com.lagradost.cloudstream3.Actor
 import com.lagradost.cloudstream3.ActorData
 import com.lagradost.cloudstream3.ActorRole

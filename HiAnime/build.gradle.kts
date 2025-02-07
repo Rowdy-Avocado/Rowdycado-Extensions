@@ -10,7 +10,6 @@ android {
 
     defaultConfig {
         val properties = Properties()
-        android.buildFeatures.buildConfig=true
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "HIANIMEAPI", "\"${properties.getProperty("HIANIMEAPI")}\"")
     }
@@ -39,5 +38,5 @@ cloudstream {
 
     iconUrl = "https://www.google.com/s2/favicons?domain=hianime.to&sz=%size%"
 
-    isCrossPlatform = false
+    isCrossPlatform = true
 }
