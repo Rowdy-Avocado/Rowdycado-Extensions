@@ -1,13 +1,12 @@
 package com.RowdyAvocado
 
-import android.content.Context
 import android.os.Handler
+import com.lagradost.cloudstream3.plugins.BasePlugin
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
-import com.lagradost.cloudstream3.plugins.Plugin
 
 @CloudstreamPlugin
-class KronchENPlugin : Plugin() {
-    override fun load(context: Context) {
+class KronchENPlugin : BasePlugin() {
+    override fun load() {
         registerMainAPI(KronchEN())
     }
 

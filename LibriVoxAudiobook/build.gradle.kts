@@ -21,4 +21,6 @@ cloudstream {
     )
 
     iconUrl = "https://librivox.org/wp-content/themes/librivox/images/librivox-logo.png"
+
+    isCrossPlatform = true
 }

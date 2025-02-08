@@ -4,6 +4,10 @@ import org.jetbrains.kotlin.konan.properties.Properties
 
 dependencies {
     implementation("com.google.android.material:material:1.12.0")
+
+    // FIXME remove this when crossplatform is fully supported
+    val cloudstream by configurations
+    cloudstream("com.lagradost:cloudstream3:pre-release")
 }
 // use an integer for version numbers
 version = 42
@@ -31,6 +35,8 @@ cloudstream {
 
     // random cc logo i found
     iconUrl = "https://raw.githubusercontent.com/Rowdy-Avocado/Rowdycado-Extensions/master/logos/ultima.png"
+
+    isCrossPlatform = false
 }
 
 android {

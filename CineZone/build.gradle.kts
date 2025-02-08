@@ -19,4 +19,6 @@ cloudstream {
     language = "en"
 
     iconUrl = "https://cinezone.to/assets/sites/cinezone/favicon.png"
+
+    isCrossPlatform = true
 }

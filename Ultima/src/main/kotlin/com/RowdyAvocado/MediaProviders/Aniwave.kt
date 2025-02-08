@@ -1,6 +1,5 @@
 package com.RowdyAvocado
 
-import android.util.Base64
 import com.RowdyAvocado.UltimaMediaProvidersUtils.ServerName
 import com.RowdyAvocado.UltimaMediaProvidersUtils.commonLinkLoader
 import com.RowdyAvocado.UltimaUtils.Category
@@ -9,12 +8,15 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.SubtitleFile
 import com.lagradost.cloudstream3.apmap
 import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.base64Decode
+import com.lagradost.cloudstream3.base64DecodeArray
+import com.lagradost.cloudstream3.base64Encode
 import com.lagradost.cloudstream3.utils.ExtractorLink
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.net.URLDecoder
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 
 class AniwaveMediaProvider : MediaProvider() {
     override val name = "Aniwave"
@@ -98,10 +100,7 @@ class AniwaveMediaProvider : MediaProvider() {
                 "exchange" -> vrf = exchange(vrf, step.keys?.get(0) ?: "", step.keys?.get(1) ?: "")
                 "rc4" -> vrf = rc4Encryption(step.keys?.get(0) ?: "", vrf)
                 "reverse" -> vrf = vrf.reversed()
-                "base64" ->
-                        vrf =
-                                Base64.encode(vrf.toByteArray(), Base64.URL_SAFE or Base64.NO_WRAP)
-                                        .toString(Charsets.UTF_8)
+                "base64" -> vrf = base64Encode(vrf.toByteArray())
                 "else" -> {}
             }
         }
@@ -116,7 +115,7 @@ class AniwaveMediaProvider : MediaProvider() {
                 "exchange" -> vrf = exchange(vrf, step.keys?.get(1) ?: "", step.keys?.get(0) ?: "")
                 "rc4" -> vrf = rc4Decryption(step.keys?.get(0) ?: "", vrf)
                 "reverse" -> vrf = vrf.reversed()
-                "base64" -> vrf = Base64.decode(vrf, Base64.URL_SAFE).toString(Charsets.UTF_8)
+                "base64" -> vrf = base64Decode(vrf)
                 "else" -> {}
             }
         }
@@ -129,18 +128,17 @@ class AniwaveMediaProvider : MediaProvider() {
         cipher.init(Cipher.DECRYPT_MODE, rc4Key, cipher.parameters)
 
         var output = cipher.doFinal(input.toByteArray())
-        output = Base64.encode(output, Base64.URL_SAFE or Base64.NO_WRAP)
-        // vrf = Base64.encode(vrf, Base64.DEFAULT or Base64.NO_WRAP)
+        output = base64Encode(output).encodeToByteArray()
+        // vrf = base64Encode(vrf, Base64.DEFAULT or Base64.NO_WRAP)
         // vrf = vrfShift(vrf)
         // // vrf = rot13(vrf)
         // vrf = vrf.reversed().toByteArray()
-        // vrf = Base64.encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)]
+        // vrf = base64Encode(vrf, Base64.URL_SAFE or Base64.NO_WRAP)]
         return output.toString(Charsets.UTF_8)
     }
 
     private fun rc4Decryption(key: String, input: String): String {
-        var vrf = input.toByteArray()
-        vrf = Base64.decode(vrf, Base64.URL_SAFE)
+        var vrf = base64DecodeArray(input)
 
         val rc4Key = SecretKeySpec(key.toByteArray(), "RC4")
         val cipher = Cipher.getInstance("RC4")

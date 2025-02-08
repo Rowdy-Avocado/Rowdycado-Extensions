@@ -19,4 +19,6 @@ cloudstream {
     language = "fil"
 
     iconUrl = "https://i1.wp.com/moviesnipipay.me/wp-content/uploads/2022/04/cropped-mviesnipipayfavicon-192x192.png"
+
+    isCrossPlatform = true
 }

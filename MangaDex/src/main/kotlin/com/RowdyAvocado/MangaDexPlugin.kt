@@ -1,7 +1,6 @@
 package com.RowdyAvocado
 
 import android.content.Context
-import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.lagradost.cloudstream3.AcraApplication.Companion.getKey
 import com.lagradost.cloudstream3.AcraApplication.Companion.setKey
@@ -19,18 +18,6 @@ class MangaDexPlugin : Plugin() {
         set(value) {
             setKey("MANGADEX_DATA_SAVER", value)
         }
-
-    companion object {
-        inline fun Handler.postFunction(crossinline function: () -> Unit) {
-            this.post(
-                    object : Runnable {
-                        override fun run() {
-                            function()
-                        }
-                    }
-            )
-        }
-    }
 
     override fun load(context: Context) {
         activity = context as AppCompatActivity
@@ -61,7 +48,7 @@ class MangaDexPlugin : Plugin() {
         frag.show(activity!!.supportFragmentManager, "")
     }
 
-    suspend fun loadChapter(chapterName: String, pages: List<String>) {
+    fun loadChapter(chapterName: String, pages: List<String>) {
         val frag = MangaDexChapterFragment(this, chapterName, pages)
         frag.show(activity!!.supportFragmentManager, "")
     }

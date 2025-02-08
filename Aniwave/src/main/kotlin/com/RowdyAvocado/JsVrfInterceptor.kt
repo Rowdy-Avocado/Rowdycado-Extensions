@@ -1,6 +1,5 @@
 package com.RowdyAvocado
 
-import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
 import android.webkit.WebResourceRequest
@@ -38,7 +37,7 @@ class JsVrfInterceptor(private val baseUrl: String) {
         return vrf
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    @Suppress("SetJavaScriptEnabled")
     private fun createWebView(): WebView? {
         val latch = CountDownLatch(1)
         var webView: WebView? = null
