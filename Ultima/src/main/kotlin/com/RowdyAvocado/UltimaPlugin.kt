@@ -53,10 +53,10 @@ class UltimaPlugin : Plugin() {
         val pluginData =
                 PluginManager.getPluginsOnline().find { it.internalName.contains("Ultima") }
         if (pluginData == null) {
-            PluginManager.hotReloadAllLocalPlugins(context as AppCompatActivity)
+            PluginManager._DO_NOT_CALL_FROM_A_PLUGIN_hotReloadAllLocalPlugins(context as AppCompatActivity)
         } else {
             PluginManager.unloadPlugin(pluginData.filePath)
-            PluginManager.loadAllOnlinePlugins(context ?: throw Exception("Unable to load plugins"))
+            PluginManager._DO_NOT_CALL_FROM_A_PLUGIN_loadAllOnlinePlugins(context ?: throw Exception("Unable to load plugins"))
             afterPluginsLoadedEvent.invoke(true)
         }
     }
