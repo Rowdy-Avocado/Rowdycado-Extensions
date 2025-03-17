@@ -47,10 +47,10 @@ class AniwavePlugin : Plugin() {
         val pluginData =
                 PluginManager.getPluginsOnline().find { it.internalName.contains("Aniwave") }
         if (pluginData == null) {
-            PluginManager.hotReloadAllLocalPlugins(context as AppCompatActivity)
+            PluginManager._DO_NOT_CALL_FROM_A_PLUGIN_hotReloadAllLocalPlugins(context as AppCompatActivity)
         } else {
             PluginManager.unloadPlugin(pluginData.filePath)
-            PluginManager.loadAllOnlinePlugins(context!!)
+            PluginManager._DO_NOT_CALL_FROM_A_PLUGIN_loadAllOnlinePlugins(context!!)
             afterPluginsLoadedEvent.invoke(true)
         }
     }
