@@ -252,6 +252,7 @@ class HiAnime : MainAPI() {
                 app.get(api, referer = api).toString().let { responseText ->
                     val m3u8Regex = """url\s*:\s*'([^']+\.m3u8)'""".toRegex()
                     val m3u8Url = m3u8Regex.find(responseText)?.groups?.get(1)?.value
+                    val m3u8headers= mapOf("Referer" to "https://megacloud.club/","Origin" to "https://megacloud.club/")
                     m3u8Url?.let { m3u8 ->
                         callback.invoke(
                             ExtractorLink(
@@ -261,6 +262,7 @@ class HiAnime : MainAPI() {
                                 mainUrl,
                                 Qualities.P1080.value,
                                 isM3u8 = true,
+                                headers = m3u8headers
                             )
                         )
                     }
