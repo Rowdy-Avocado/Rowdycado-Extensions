@@ -71,8 +71,9 @@ subprojects {
 
     dependencies {
         val implementation by configurations
+        val cloudstream by configurations
 
-        implementation("com.github.recloudstream.cloudstream:library-jvm:master-SNAPSHOT")
+        cloudstream("com.lagradost:cloudstream3:pre-release")
 
         // these dependencies can include any of those which are added by the app,
         // but you dont need to include any of them if you dont need them
